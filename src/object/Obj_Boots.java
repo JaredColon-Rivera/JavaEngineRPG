@@ -1,15 +1,25 @@
 package object;
 
+import main.GamePanel;
+
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.Objects;
 
+import static util.ResourceUtil.getResource;
+
 public class Obj_Boots extends ParentObject{
 
-    public Obj_Boots() {
+    GamePanel gp;
+
+    public Obj_Boots(GamePanel gp) {
+
+        this.gp = gp;
+
         name = "Boots";
         try{
-            image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/boots.png")));
+            image = getResource("/objects/boots.png");
+            image = resUtil.scaleImage(image, gp.tileSize, gp.tileSize);
         }catch(IOException e){
             e.printStackTrace();
         }

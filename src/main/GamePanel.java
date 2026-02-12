@@ -1,25 +1,24 @@
 package main;
 
+import entity.Entity;
 import entity.Player;
 import object.ParentObject;
 import tile.TileManager;
 
 import javax.swing.JPanel;
 import java.awt.*;
+import java.io.IOException;
 
 public class GamePanel extends JPanel implements Runnable{
 
     // SCREEN SETTINGS
     final int originalTileSize = 16; // 16x16 tile
     final int scale = 3;
-
     public final int tileSize = originalTileSize * scale; // 48x48 tile
     public final int maxScreenCol = 16;
     public final int maxScreenRow = 12;
     public final int screenWidth = tileSize * maxScreenCol; // 768 pixels
     public final int screenHeight = tileSize * maxScreenRow; // 576 pixels
-
-    public UI ui = new UI(this);
 
     // WORLD SETTINGS
     public final int maxWorldCol = 50;
@@ -30,39 +29,52 @@ public class GamePanel extends JPanel implements Runnable{
     // FPS
     int FPS = 60;
 
-    // System
-    TileManager tileM = new TileManager(this);
-    KeyHandler keyH = new KeyHandler();
+    // SYSTEM SETTINGS
+    public KeyHandler keyH = new KeyHandler(this);
+    TileManager tileM = new TileManager(this, keyH);
     Sound music = new Sound();
     Sound soundEffect = new Sound();
     public CollisionChecker cChecker = new CollisionChecker(this);
-    public AssetSetter aSetter = new AssetSetter(this);
+    public AssetSetter aSetter = new AssetSetter(this, keyH);
     Thread gameThread;
 
-    // Entity and Object
+    // UI
+    public UI ui = new UI(this);
+
+    // ENTITY AND OBJECTS
     public Player player = new Player(this, keyH);
     public ParentObject[] obj = new ParentObject[10];
+    public Entity[] npc = new Entity[10];
 
-    // Set Player's default position
+    // GAME STATE
+    public int gameState;
+    public final int titleState = 0;
+    public final int playState = 1;
+    public final int pauseState = 2;
+    public final int dialogueState = 3;
+
+    // Set Player's default position (Not used)
     int playerX = 10;
     int playerY = 10;
     int playerSpeed = 4;
 
-
-    public GamePanel(){
-
+    // OPEN THE GAME WINDOW
+    public GamePanel() throws IOException, FontFormatException {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.gray);
+        this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
     }
 
+    // START THE GAME
     public void setupGame(){
         aSetter.setObject();
+        aSetter.setNPC();
 
         // Play theme song
-        playMusic(0);
+        // playMusic(0);
+        gameState = titleState;
     }
 
     public void startGameThread(){
@@ -70,6 +82,7 @@ public class GamePanel extends JPanel implements Runnable{
         gameThread.start();
     }
 
+    // GAME LOOP
     @Override
     public void run() {
 
@@ -104,40 +117,87 @@ public class GamePanel extends JPanel implements Runnable{
 
     }
 
+    // TRACK ACTIONS BY PLAYER AND UPDATE SPRITES
     public void update(){
 
-        player.update();
+
+        if(gameState == playState){
+            player.update();
+
+            // NPC
+            for(int i = 0; i < npc.length; i++){
+                if(npc[i] != null){
+                    npc[i].update();
+                }
+            }
+        }
+        if(gameState == pauseState){
+
+        }
 
     }
 
+    // DRAW ON SCREEN
     public void paintComponent(Graphics g){
 
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
 
-        // Drawn first
-        // Tile
-        tileM.draw(g2);
-
-        // Object
-        for(int i = 0; i < obj.length; i++){
-            if(obj[i] != null){
-                obj[i].draw(g2, this);
-            }
+        // DEBUG
+        long drawStart = 0;
+        if(keyH.debugMode){
+            drawStart = System.nanoTime();
         }
 
-        // Player
-        player.draw(g2);
+        // TITLE SCREEN
+        if(gameState == titleState){
 
-        // UI
-        ui.draw(g2);
+            ui.draw(g2);
+
+        }
+        else{
+
+            // Drawn first
+
+            // Tile
+            tileM.draw(g2);
+
+            // Object
+            for(int i = 0; i < obj.length; i++){
+                if(obj[i] != null){
+                    obj[i].draw(g2, this);
+                }
+            }
+
+            // NPC
+            for(int i = 0; i < npc.length; i++){
+                if(npc[i] != null){
+                    npc[i].draw(g2);
+                }
+            }
+
+            // Player
+            player.draw(g2);
+
+            // UI
+            ui.draw(g2);
+
+            // Debug
+            long drawEnd = System.nanoTime();
+            long passed = drawEnd - drawStart;
+            if(keyH.debugMode){
+                g2.setColor(Color.RED);
+                g2.drawString("Draw Time: " + passed, 10, 400);
+            }
+
+        }
 
         g2.dispose();
 
     }
 
-    // Music and Sound
+    // MUSIC AND SOUND
     public void playMusic(int i){
         music.setFile(i);
         music.play();

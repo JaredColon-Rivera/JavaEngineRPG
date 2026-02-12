@@ -1,6 +1,7 @@
 package object;
 
 import main.GamePanel;
+import util.ResourceUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -14,6 +15,7 @@ public class ParentObject {
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX = 0;
     public int solidAreaDefaultY = 0;
+    ResourceUtil resUtil = new ResourceUtil();
 
     public void draw(Graphics2D g2, GamePanel gp){
 

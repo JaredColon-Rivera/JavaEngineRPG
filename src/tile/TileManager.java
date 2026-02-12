@@ -1,62 +1,71 @@
 package tile;
 
 import main.GamePanel;
+import main.KeyHandler;
+import util.ResourceUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InaccessibleObjectException;
 
+import static util.ResourceUtil.getResource;
+
 public class TileManager {
 
     GamePanel gp;
+    KeyHandler keyH;
     public Tile[] tile;
     public int mapTileNum[][];
     int printedTileNumber;
+    String mapPath = "/maps/biggerMap.txt";
 
-    public TileManager(GamePanel gp){
-
+    public TileManager(GamePanel gp, KeyHandler keyH){
+        this.keyH = keyH;
         this.gp = gp;
         tile = new Tile[10];
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
-
         getTileImage();
-        loadMap("/maps/biggerMap.txt");
+        loadMap(mapPath);
 
+    }
+
+    public void setup(int index, String imagePath, boolean collision){
+        ResourceUtil resUtil = new ResourceUtil();
+        try{
+            tile[index] = new Tile();
+            tile[index].image = getResource(imagePath);
+            tile[index].collision = collision;
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
     public void getTileImage() {
 
-        try{
+        // Grass
+        setup(0, "/tiles/grass.png", false);
 
-            tile[0] = new Tile();
-            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/grass.png"));
+        // Walls
+        setup(1, "/tiles/wall.png", true);
 
-            tile[1] = new Tile();
-            tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png"));
-            tile[1].collision = true;
+        // Water
+        setup(2, "/tiles/water.png", true);
 
-            tile[2] = new Tile();
-            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water.png"));
-            tile[2].collision = true;
+        // Earth
+        setup(3, "/tiles/earth.png", false);
 
-            tile[3] = new Tile();
-            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/earth.png"));
+        // Tree
+        setup(4, "/tiles/tree.png", true);
 
-            tile[4] = new Tile();
-            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png"));
-            tile[4].collision = true;
+        // Sand
+        setup(5, "/tiles/sand.png", false);
 
-            tile[5] = new Tile();
-            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/sand.png"));
-
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
     public void loadMap(String filePath){
@@ -114,12 +123,17 @@ public class TileManager {
 
                 g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 
-                // Show tiles
-                g2.drawRect(screenX, screenY, gp.tileSize, gp.tileSize);
+                if(keyH.debugMode){
 
-                printedTileNumber = tileNum;
-                // g2.drawString(String.valueOf(printedTileNumber), screenX, screenY);
-                g2.drawString("X:" + String.valueOf(worldCol) + "Y:" + String.valueOf(worldRow), screenX, screenY);
+                    // Show tiles
+                    g2.drawRect(screenX, screenY, gp.tileSize, gp.tileSize);
+
+                    printedTileNumber = tileNum;
+                    // Show coords
+                    g2.drawString("X:" + String.valueOf(worldCol) + "Y:" + String.valueOf(worldRow), screenX, screenY);
+
+                }
+
 
             }
             worldCol++;

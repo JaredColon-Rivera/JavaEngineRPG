@@ -2,12 +2,15 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import util.ResourceUtil;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Objects;
+
+import static util.constants.KeyConstants.*;
+import static util.constants.SpriteConstants.*;
+import static util.ResourceUtil.*;
 
 public class Player extends Entity{
 
@@ -19,9 +22,11 @@ public class Player extends Entity{
 
     public int hasKey = 0;
 
-    boolean idle = true;
-
     public Player (GamePanel gp, KeyHandler keyH){
+
+        // instantiating super class (Entity.java)
+        super(gp, keyH);
+
         this.gp = gp;
         this.keyH = keyH;
 
@@ -47,100 +52,78 @@ public class Player extends Entity{
     }
 
     public void getPlayerImage(){
-        try{
 
-            // Faces
-            // Face down
-            face_down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_faces/spr_lemon_head_face_down/lemon_head_face_down1.png")));
-            face_down2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_faces/spr_lemon_head_face_down/lemon_head_face_down2.png")));
+        // Faces
+        face_down1 = setup(FACE_DOWN_1);
+        face_down2 = setup(FACE_DOWN_2);
 
-            // Face up
-            face_up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_faces/spr_lemon_head_face_up/lemon_head_face_up1.png")));
-            face_up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_faces/spr_lemon_head_face_up/lemon_head_face_up2.png")));
+        face_up1 = setup(FACE_UP_1);
+        face_up2 = setup(FACE_UP_2);
 
-            // Face left
-            face_left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_faces/spr_lemon_head_face_left/lemon_head_face_left1.png")));
-            face_left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_faces/spr_lemon_head_face_left/lemon_head_face_left2.png")));
+        face_left1 = setup(FACE_LEFT_1);
+        face_left2 = setup(FACE_LEFT_2);
 
-            // Face right
-            face_right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_faces/spr_lemon_head_face_right/lemon_head_face_right1.png")));
-            face_right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_faces/spr_lemon_head_face_right/lemon_head_face_right2.png")));
-
-            // Armor Idle
-            // Armor Down
-            armor_idle_down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_idle/spr_armor_idle_down/armor_leather_idle_down1.png")));
-
-            // Armor Up
-            armor_idle_up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_idle/spr_armor_idle_up/armor_leather_idle_up1.png")));
-
-            // Armor left
-            armor_idle_left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_idle/spr_armor_idle_left/armor_leather_idle_left1.png")));
-
-            // Armor right
-            armor_idle_right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_idle/spr_armor_idle_right/armor_leather_idle_right1.png")));
-
-            // Idle
-            idle_down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_idle_down/base_idle_down1.png")));
-            idle_up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_idle_up/base_idle_up1.png")));
-            idle_left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_idle_left/base_idle_left1.png")));
-            idle_right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_idle_right/base_idle_right1.png")));
-
-            // Armor Walking
-            // Armor walking down
-            armor_walking_down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_down/armor_leather_walking_down1.png")));
-            armor_walking_down2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_down/armor_leather_walking_down2.png")));
-            armor_walking_down3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_down/armor_leather_walking_down3.png")));
-            armor_walking_down4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_down/armor_leather_walking_down4.png")));
-
-            // Armor walking up
-            armor_walking_up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_up/armor_leather_walking_up1.png")));
-            armor_walking_up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_up/armor_leather_walking_up2.png")));
-            armor_walking_up3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_up/armor_leather_walking_up3.png")));
-            armor_walking_up4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_up/armor_leather_walking_up4.png")));
-
-            // Armor walking left
-            armor_walking_left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_left/armor_leather_walking_left1.png")));
-            armor_walking_left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_left/armor_leather_walking_left2.png")));
-            armor_walking_left3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_left/armor_leather_walking_left3.png")));
-            armor_walking_left4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_left/armor_leather_walking_left4.png")));
-
-            // Armor walking right
-            armor_walking_right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_right/armor_leather_walking_right1.png")));
-            armor_walking_right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_right/armor_leather_walking_right2.png")));
-            armor_walking_right3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_right/armor_leather_walking_right3.png")));
-            armor_walking_right4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_armor/armor_walking/spr_armor_walking_right/armor_leather_walking_right4.png")));
+        face_right1 = setup(FACE_RIGHT_1);
+        face_right2 = setup(FACE_RIGHT_2);
 
 
-            // Walking
-            // Walk up animation
-            up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_up/base_walk_up1.png")));
-            up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_up/base_walk_up2.png")));
-            up3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_up/base_walk_up3.png")));
-            up4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_up/base_walk_up4.png")));
-
-            // Walk down animation
-            down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_down/base_walk_down1.png")));
-            down2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_down/base_walk_down2.png")));
-            down3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_down/base_walk_down3.png")));
-            down4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_down/base_walk_down4.png")));
-
-            // Walk left animation
-            left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_left/base_walk_left1.png")));
-            left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_left/base_walk_left2.png")));
-            left3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_left/base_walk_left3.png")));
-            left4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_left/base_walk_left4.png")));
-
-            // Walk right animation
-            right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_right/base_walk_right1.png")));
-            right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_right/base_walk_right2.png")));
-            right3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_right/base_walk_right3.png")));
-            right4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/spr_bases/spr_base_walk_right/base_walk_right4.png")));
+        // Armor Idle
+        armor_idle_down1 = setup(ARMOR_IDLE_DOWN_1);
+        armor_idle_up1 = setup(ARMOR_IDLE_UP_1);
+        armor_idle_left1 = setup(ARMOR_IDLE_LEFT_1);
+        armor_idle_right1 = setup(ARMOR_IDLE_RIGHT_1);
 
 
+        // Base Idle
+        idle_down1 = setup(IDLE_DOWN_1);
+        idle_up1 = setup(IDLE_UP_1);
+        idle_left1 = setup(IDLE_LEFT_1);
+        idle_right1 = setup(IDLE_RIGHT_1);
 
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+
+        // Armor Walking
+        armor_walking_down1 = setup(ARMOR_WALK_DOWN_1);
+        armor_walking_down2 = setup(ARMOR_WALK_DOWN_2);
+        armor_walking_down3 = setup(ARMOR_WALK_DOWN_3);
+        armor_walking_down4 = setup(ARMOR_WALK_DOWN_4);
+
+        armor_walking_up1 = setup(ARMOR_WALK_UP_1);
+        armor_walking_up2 = setup(ARMOR_WALK_UP_2);
+        armor_walking_up3 = setup(ARMOR_WALK_UP_3);
+        armor_walking_up4 = setup(ARMOR_WALK_UP_4);
+
+        armor_walking_left1 = setup(ARMOR_WALK_LEFT_1);
+        armor_walking_left2 = setup(ARMOR_WALK_LEFT_2);
+        armor_walking_left3 = setup(ARMOR_WALK_LEFT_3);
+        armor_walking_left4 = setup(ARMOR_WALK_LEFT_4);
+
+        armor_walking_right1 = setup(ARMOR_WALK_RIGHT_1);
+        armor_walking_right2 = setup(ARMOR_WALK_RIGHT_2);
+        armor_walking_right3 = setup(ARMOR_WALK_RIGHT_3);
+        armor_walking_right4 = setup(ARMOR_WALK_RIGHT_4);
+
+
+        // Base Walking
+        up1 = setup(WALK_UP_1);
+        up2 = setup(WALK_UP_2);
+        up3 = setup(WALK_UP_3);
+        up4 = setup(WALK_UP_4);
+
+        down1 = setup(WALK_DOWN_1);
+        down2 = setup(WALK_DOWN_2);
+        down3 = setup(WALK_DOWN_3);
+        down4 = setup(WALK_DOWN_4);
+
+        left1 = setup(WALK_LEFT_1);
+        left2 = setup(WALK_LEFT_2);
+        left3 = setup(WALK_LEFT_3);
+        left4 = setup(WALK_LEFT_4);
+
+        right1 = setup(WALK_RIGHT_1);
+        right2 = setup(WALK_RIGHT_2);
+        right3 = setup(WALK_RIGHT_3);
+        right4 = setup(WALK_RIGHT_4);
+
     }
 
     public void update(){
@@ -150,16 +133,16 @@ public class Player extends Entity{
             idle = false;
 
             if(keyH.upPressed){
-                direction = "up";
+                direction = DIRECTION_UP;
             }
             else if(keyH.downPressed){
-                direction = "down";
+                direction = DIRECTION_DOWN;
             }
             else if(keyH.leftPressed){
-                direction = "left";
+                direction = DIRECTION_LEFT;
             }
             else if(keyH.rightPressed){
-                direction = "right";
+                direction = DIRECTION_RIGHT;
             }
 
             // Check tile collision
@@ -170,19 +153,23 @@ public class Player extends Entity{
             int objIndex = gp.cChecker.checkObject(this, true);
             pickupObject(objIndex);
 
+            // Check Npc collision
+            int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
+            interactNPC(npcIndex);
+
             // If collision is false, player can move
-            if(collisionOn == false){
+            if(!collisionOn){
                 switch(direction){
-                    case "up":
+                    case DIRECTION_UP:
                         worldY -= speed;
                         break;
-                    case "down":
+                    case DIRECTION_DOWN:
                         worldY += speed;
                         break;
-                    case "left":
+                    case DIRECTION_LEFT:
                         worldX -= speed;
                         break;
-                    case "right":
+                    case DIRECTION_RIGHT:
                         worldX += speed;
                         break;
                 }
@@ -209,13 +196,13 @@ public class Player extends Entity{
         else{
             idle = true;
             switch(direction){
-                case "up":
+                case DIRECTION_UP:
                     break;
-                case "down":
+                case DIRECTION_DOWN:
                     break;
-                case "left":
+                case DIRECTION_LEFT:
                     break;
-                case "right":
+                case DIRECTION_RIGHT:
                     break;
                 default:
                     break;
@@ -224,6 +211,16 @@ public class Player extends Entity{
 
 
 
+    }
+
+    public void interactNPC(int i){
+        if(i != 999){
+            if(gp.keyH.enterPressed){
+                gp.gameState = gp.dialogueState;
+                gp.npc[i].speak();
+            }
+        }
+        gp.keyH.enterPressed = false;
     }
 
     public void pickupObject(int i){
@@ -274,7 +271,7 @@ public class Player extends Entity{
 
         if(!idle){
             switch(direction){
-                case "up":
+                case DIRECTION_UP:
                     if(spriteNum == 1){
                         image = up1;
                         image_face = face_up1;
@@ -296,7 +293,7 @@ public class Player extends Entity{
                         image_armor = armor_walking_up4;
                     }
                     break;
-                case "down":
+                case DIRECTION_DOWN:
                     if(spriteNum == 1){
                         image = down1;
                         image_face = face_down1;
@@ -318,7 +315,7 @@ public class Player extends Entity{
                         image_armor = armor_walking_down4;
                     }
                     break;
-                case "left":
+                case DIRECTION_LEFT:
                     if(spriteNum == 1){
                         image = left1;
                         image_face = face_left1;
@@ -340,7 +337,7 @@ public class Player extends Entity{
                         image_armor = armor_walking_left4;
                     }
                     break;
-                case "right":
+                case DIRECTION_RIGHT:
                     if(spriteNum == 1){
                         image = right1;
                         image_face = face_right1;
@@ -370,22 +367,22 @@ public class Player extends Entity{
         else{
             // Idle
             switch(direction){
-                case "up":
+                case DIRECTION_UP:
                     image = idle_up1;
                     image_face = face_up1;
                     image_armor = armor_idle_up1;
                     break;
-                case "down":
+                case DIRECTION_DOWN:
                     image = idle_down1;
                     image_face = face_down1;
                     image_armor = armor_idle_down1;
                     break;
-                case "left":
+                case DIRECTION_LEFT:
                     image = idle_left1;
                     image_face = face_left1;
                     image_armor = armor_idle_left1;
                     break;
-                case "right":
+                case DIRECTION_RIGHT:
                     image = idle_right1;
                     image_face = face_right1;
                     image_armor = armor_idle_right1;
@@ -395,21 +392,20 @@ public class Player extends Entity{
             }
         }
 
-
         g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
         g2.drawImage(image_face, screenX, screenY, gp.tileSize, gp.tileSize, null);
         g2.drawImage(image_armor, screenX, screenY, gp.tileSize, gp.tileSize, null);
 
         // Show collision mask
-        g2.setColor(Color.RED);
-        g2.drawRect(
-                worldX - gp.player.worldX + gp.player.screenX + solidArea.x,
-                worldY - gp.player.worldY + gp.player.screenY + solidArea.y,
-                solidArea.width,
-                solidArea.height
-        );
-
-
+        if(keyH.debugMode){
+            g2.setColor(Color.RED);
+            g2.drawRect(
+                    worldX - gp.player.worldX + gp.player.screenX + solidArea.x,
+                    worldY - gp.player.worldY + gp.player.screenY + solidArea.y,
+                    solidArea.width,
+                    solidArea.height
+            );
+        }
     }
 
 }
