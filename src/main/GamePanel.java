@@ -2,12 +2,14 @@ package main;
 
 import entity.Entity;
 import entity.Player;
-import object.ParentObject;
 import tile.TileManager;
 
 import javax.swing.JPanel;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -31,6 +33,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     // SYSTEM SETTINGS
     public KeyHandler keyH = new KeyHandler(this);
+    public EventHandler eventHandler = new EventHandler(this, keyH);
     TileManager tileM = new TileManager(this, keyH);
     Sound music = new Sound();
     Sound soundEffect = new Sound();
@@ -43,8 +46,10 @@ public class GamePanel extends JPanel implements Runnable{
 
     // ENTITY AND OBJECTS
     public Player player = new Player(this, keyH);
-    public ParentObject[] obj = new ParentObject[10];
+    public Entity[] obj = new Entity[10];
     public Entity[] npc = new Entity[10];
+    public Entity[] enemy = new Entity[20];
+    ArrayList<Entity> entityList = new ArrayList<>();
 
     // GAME STATE
     public int gameState;
@@ -71,10 +76,12 @@ public class GamePanel extends JPanel implements Runnable{
     public void setupGame(){
         aSetter.setObject();
         aSetter.setNPC();
+        aSetter.setEnemy();
 
         // Play theme song
         // playMusic(0);
-        gameState = titleState;
+        // Change to title state to have title happen first
+        gameState = playState;
     }
 
     public void startGameThread(){
@@ -130,11 +137,18 @@ public class GamePanel extends JPanel implements Runnable{
                     npc[i].update();
                 }
             }
+
+            // ENEMY
+            for(int i = 0; i < enemy.length; i++){
+                if(enemy[i] != null){
+                    enemy[i].update();
+                }
+            }
+
         }
         if(gameState == pauseState){
 
         }
-
     }
 
     // DRAW ON SCREEN
@@ -163,25 +177,54 @@ public class GamePanel extends JPanel implements Runnable{
             // Tile
             tileM.draw(g2);
 
-            // Object
-            for(int i = 0; i < obj.length; i++){
-                if(obj[i] != null){
-                    obj[i].draw(g2, this);
-                }
-            }
+            // Player
+            entityList.add(player);
 
-            // NPC
+            // NPCS
             for(int i = 0; i < npc.length; i++){
                 if(npc[i] != null){
-                    npc[i].draw(g2);
+                    entityList.add(npc[i]);
                 }
             }
 
-            // Player
-            player.draw(g2);
+            // OBJs
+            for(int i = 0; i < obj.length; i++){
+                if(obj[i] != null){
+                    entityList.add(obj[i]);
+                }
+            }
+
+            // Enemies
+            for(int i = 0; i < enemy.length; i++){
+                if(enemy[i] != null){
+                    entityList.add(enemy[i]);
+                }
+            }
+
+            // SORT
+            Collections.sort(entityList, new Comparator<Entity>() {
+                @Override
+                public int compare(Entity e1, Entity e2) {
+
+                    int result = Integer.compare(e1.worldY, e2.worldY);
+
+                    return result;
+                }
+            });
+
+            // DRAW Entities
+            for(int i = 0; i < entityList.size(); i++){
+                entityList.get(i).draw(g2);
+            }
+
+            // EMPTY Entity List
+            entityList.clear();
 
             // UI
             ui.draw(g2);
+
+            //
+            eventHandler.draw(g2, 13, 10);
 
             // Debug
             long drawEnd = System.nanoTime();

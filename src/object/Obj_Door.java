@@ -1,29 +1,23 @@
 package object;
 
+import entity.Entity;
 import main.GamePanel;
+import main.KeyHandler;
 
-import javax.imageio.ImageIO;
 import java.io.IOException;
-import java.util.Objects;
 
 import static util.ResourceUtil.getResource;
 
-public class Obj_Door extends ParentObject{
+public class Obj_Door extends Entity {
 
     GamePanel gp;
 
-    public Obj_Door(GamePanel gp) {
+    public Obj_Door(GamePanel gp, KeyHandler keyH) {
 
-        this.gp = gp;
+        super(gp, keyH);
 
         name = "Door";
-        try{
-            image = getResource("/objects/doors.png");
-            image = resUtil.scaleImage(image, gp.tileSize, gp.tileSize);
-
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        idle_down1 = setup("/objects/env/doors.png");
         collision = true;
     }
 

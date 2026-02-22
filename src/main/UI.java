@@ -1,6 +1,9 @@
 package main;
 
+import entity.Entity;
+import object.Obj_Heart;
 import object.Obj_Key;
+import object.ParentObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -14,11 +17,14 @@ public class UI {
     Graphics2D g2;
     Font arial_40, arial_80B, comicSans, comicSansB, century;
     // BufferedImage keyImage;
+    BufferedImage heart_full, heart_half, heart_blank;
     public boolean messageOn = false;
     public String message = "";
     int messageCounter = 0;
     public boolean gameFinished = false;
     public String currentDialogue = "";
+    public int commandNum = 0;
+    KeyHandler keyH;
 
     double playTime;
     DecimalFormat dFormat = new DecimalFormat("#0.00");
@@ -26,6 +32,7 @@ public class UI {
     public UI(GamePanel gp) throws IOException, FontFormatException {
 
         this.gp = gp;
+        this.keyH = keyH;
 
         arial_40 = new Font("Arial", Font.PLAIN, 40);
         arial_80B = new Font("Comic Sans", Font.BOLD, 80);
@@ -36,6 +43,11 @@ public class UI {
 
         // Obj_Key key = new Obj_Key(gp);
         // keyImage = key.image;
+
+        Entity heart = new Obj_Heart(gp, keyH);
+        heart_full = heart.image;
+        heart_half = heart.image2;
+        heart_blank = heart.image3;
 
     }
 
@@ -56,13 +68,14 @@ public class UI {
         if(gp.gameState == gp.titleState){
             drawTitleScreen();
         }
-
         // PLAY STATE
         if(gp.gameState == gp.playState){
             // Do play state stuff later
+            drawPlayerLife();
         }
         if(gp.gameState == gp.pauseState){
             drawPauseScreen();
+            drawPlayerLife();
         }
         // Dialouge State
         if(gp.gameState == gp.dialogueState){
@@ -128,6 +141,39 @@ public class UI {
 //        }
     }
 
+    public void drawPlayerLife(){
+
+        int x = gp.tileSize/2;
+        int y = gp.tileSize/2;
+
+        int i = 0;
+
+        // Draw Max Life
+        while(i < gp.player.maxLife/2){
+            g2.drawImage(heart_blank, x, y, null);
+            i++;
+            x += gp.tileSize;
+        }
+
+        // Reset
+        x = gp.tileSize/2;
+        y = gp.tileSize/2;
+        i = 0;
+
+        // Draw Current Life
+        while(i < gp.player.life){
+            g2.drawImage(heart_half, x, y, null);
+            i++;
+            if(i < gp.player.life){
+                g2.drawImage(heart_full, x, y, null);
+            }
+            i++;
+            x+= gp.tileSize;
+        }
+
+    }
+
+
     public void drawTitleScreen(){
         // TITLE NAME
         g2.setColor(Color.black);
@@ -150,6 +196,39 @@ public class UI {
         g2.drawImage(gp.player.down1, x, y, gp.tileSize * 2, gp.tileSize * 2, null);
         g2.drawImage(gp.player.face_down1, x, y, gp.tileSize * 2, gp.tileSize * 2, null);
         g2.drawImage(gp.player.armor_idle_down1, x, y, gp.tileSize * 2, gp.tileSize * 2, null);
+
+        // MENU
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 40F));
+
+        text = "NEW GAME";
+        x = getXForCenteredText(text);
+        y += gp.tileSize * 3.5;
+        g2.drawString(text, x, y);
+        if(commandNum == 0){
+            g2.drawString(">", x - gp.tileSize, y);
+            g2.drawString("<", x + (gp.tileSize + 220), y);
+        }
+
+        text = "LOAD GAME";
+        x = getXForCenteredText(text);
+        y += gp.tileSize;
+        g2.drawString(text, x, y);
+        if(commandNum == 1){
+            g2.drawString(">", x - gp.tileSize, y);
+            g2.drawString("<", x + (gp.tileSize + 235), y);
+
+        }
+
+        text = "QUIT";
+        x = getXForCenteredText(text);
+        y += gp.tileSize;
+        g2.drawString(text, x, y);
+        if(commandNum == 2){
+            g2.drawString(">", x - gp.tileSize, y);
+            g2.drawString("<", x + (gp.tileSize + 82), y);
+
+        }
+
 
 
     }

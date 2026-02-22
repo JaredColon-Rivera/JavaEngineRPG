@@ -1,28 +1,23 @@
 package object;
 
+import entity.Entity;
 import main.GamePanel;
+import main.KeyHandler;
 
-import javax.imageio.ImageIO;
 import java.io.IOException;
-import java.util.Objects;
 
 import static util.ResourceUtil.getResource;
 
-public class Obj_Boots extends ParentObject{
+public class Obj_Boots extends Entity {
 
-    GamePanel gp;
+    public Obj_Boots(GamePanel gp, KeyHandler keyH) {
 
-    public Obj_Boots(GamePanel gp) {
-
-        this.gp = gp;
+        super(gp, keyH);
 
         name = "Boots";
-        try{
-            image = getResource("/objects/boots.png");
-            image = resUtil.scaleImage(image, gp.tileSize, gp.tileSize);
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        idle_down1 = setup("/objects/items/boots.png");
+
+
     }
 
 }

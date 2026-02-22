@@ -11,6 +11,7 @@ public class KeyConstants {
     public static final int KEY_DEBUG = KeyEvent.VK_T;
     public static final int KEY_PAUSE = KeyEvent.VK_SPACE;
     public static final int KEY_ENTER = KeyEvent.VK_ENTER;
+    public static final int KEY_ATTACK = KeyEvent.VK_K;
 
     public static final String DIRECTION_UP = "up";
     public static final String DIRECTION_DOWN = "down";

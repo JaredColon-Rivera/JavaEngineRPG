@@ -18,8 +18,8 @@ public class Entity {
     KeyHandler keyH;
     public int worldX, worldY;
     public int speed;
-    boolean idle = true;
-    public String direction;
+    public boolean idle = true;
+    public String direction = DIRECTION_DOWN;
 
     public final int screenX;
     public final int screenY;
@@ -27,16 +27,30 @@ public class Entity {
     public int spriteCounter = 0;
     public int spriteNum = 1;
 
+    public BufferedImage image, image2, image3;
+    public String name;
+    public boolean collision = false;
+
+    // Combat
+    public boolean attacking = false;
+
     // Collision
-    public Rectangle solidArea = new Rectangle(4, 6, 40, 40);
+    public Rectangle solidArea = new Rectangle(4, 20, 40, 20);
     public int solidAreaDefaultX, solidAreaDefaultY;
 
     public boolean collisionOn = false;
 
     public int actionLockCounter = 0;
+    public boolean invincible = false;
+    public int invincibleCounter = 0;
+    public int type; // 0 = player, 1 = npc, 2 = enemy;
 
     String[] dialogues = new String[20];
     int dialogueIndex = 0;
+
+    // CHARACTER STATUS
+    public int maxLife;
+    public int life;
 
     public BufferedImage
 
@@ -70,7 +84,10 @@ public class Entity {
     up1, up2, up3, up4,
             down1, down2, down3, down4,
             left1, left2, left3, left4,
-            right1, right2, right3, right4;
+            right1, right2, right3, right4,
+
+    // Attacking
+    attack_right1, attack_right2, attack_right3, attack_right4;
 
     public Entity(GamePanel gp, KeyHandler keyH){
         this.gp = gp;
@@ -92,6 +109,21 @@ public class Entity {
         try{
             image = getResource(imagePath);
             image = resUtil.scaleImage(image, gp.tileSize, gp.tileSize);
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+
+        return image;
+    }
+
+    public BufferedImage setup(String imagePath, int width, int height){
+        ResourceUtil resUtil = new ResourceUtil();
+        BufferedImage image = null;
+
+        try{
+            image = getResource(imagePath);
+            image = resUtil.scaleImage(image, width, height);
         }
         catch(IOException e){
             e.printStackTrace();
@@ -137,9 +169,20 @@ public class Entity {
         gp.cChecker.checkTile(this);
         gp.cChecker.checkObject(this, false);
         gp.cChecker.checkPlayer(this);
+        gp.cChecker.checkEntity(this, gp.npc);
+        gp.cChecker.checkEntity(this, gp.enemy);
+
+        boolean contactPlayer = gp.cChecker.checkPlayer(this);
+
+        if(this.type == 2 && contactPlayer){
+            if(!gp.player.invincible){
+                gp.player.life -= 1;
+                gp.player.invincible = true;
+            }
+        }
 
         // If collision is false, player can move
-        if(collisionOn == false){
+        if(!collisionOn){
             switch(direction){
                 case DIRECTION_UP:
                     worldY -= speed;

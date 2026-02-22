@@ -90,5 +90,11 @@ public class SpriteConstants {
     public static final String WALK_RIGHT_3 = "/player/spr_bases/spr_base_walk_right/base_walk_right3.png";
     public static final String WALK_RIGHT_4 = "/player/spr_bases/spr_base_walk_right/base_walk_right4.png";
 
+    // BASE ATTACK RIGHT
+    public static final String ATTACK_RIGHT_1 = "/player/spr_bases/spr_base_combat/spr_base_combat_right/spr_base_combat_right1.png";
+    public static final String ATTACK_RIGHT_2 = "/player/spr_bases/spr_base_combat/spr_base_combat_right/spr_base_combat_right2.png";
+    public static final String ATTACK_RIGHT_3 = "/player/spr_bases/spr_base_combat/spr_base_combat_right/spr_base_combat_right3.png";
+    public static final String ATTACK_RIGHT_4 = "/player/spr_bases/spr_base_combat/spr_base_combat_right/spr_base_combat_right4.png";
+
 
 }

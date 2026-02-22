@@ -1,29 +1,22 @@
 package object;
 
+import entity.Entity;
 import main.GamePanel;
-import util.ResourceUtil;
+import main.KeyHandler;
 
-import javax.imageio.ImageIO;
 import java.io.IOException;
-import java.util.Objects;
 
 import static util.ResourceUtil.getResource;
 
-public class Obj_Key extends ParentObject{
+public class Obj_Key extends Entity {
 
-    GamePanel gp;
+    public Obj_Key(GamePanel gp, KeyHandler keyH) {
 
-    public Obj_Key(GamePanel gp) {
-
-        this.gp = gp;
+        super(gp, keyH);
 
         name = "Key";
-        try{
-            image = getResource("/objects/key.png");
-            image = resUtil.scaleImage(image, gp.tileSize, gp.tileSize);
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        idle_down1 = setup("/objects/items/key.png");
+
     }
 
 }

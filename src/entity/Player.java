@@ -41,6 +41,7 @@ public class Player extends Entity{
 
         setDefaultValues();
         getPlayerImage();
+        getPlayerAttackImage();
     }
 
     public void setDefaultValues(){
@@ -49,6 +50,8 @@ public class Player extends Entity{
         worldY = gp.tileSize * 10;
         speed = 3;
         direction = "down";
+        maxLife = 6;
+        life = maxLife;
     }
 
     public void getPlayerImage(){
@@ -126,11 +129,22 @@ public class Player extends Entity{
 
     }
 
+    public void getPlayerAttackImage(){
+
+        attack_right1 = setup(ATTACK_RIGHT_1, gp.tileSize * 2, gp.tileSize * 2);
+        attack_right2 = setup(ATTACK_RIGHT_2, gp.tileSize * 2, gp.tileSize * 2);
+        attack_right3 = setup(ATTACK_RIGHT_3, gp.tileSize * 2, gp.tileSize * 2);
+        attack_right4 = setup(ATTACK_RIGHT_4, gp.tileSize * 2, gp.tileSize * 2);
+    }
+
     public void update(){
 
-        if(keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed){
-
+        if(attacking){
             idle = false;
+            attacking();
+
+        }
+        else if(keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || keyH.enterPressed){
 
             if(keyH.upPressed){
                 direction = DIRECTION_UP;
@@ -145,6 +159,8 @@ public class Player extends Entity{
                 direction = DIRECTION_RIGHT;
             }
 
+            // COLLISION
+
             // Check tile collision
             collisionOn = false;
             gp.cChecker.checkTile(this);
@@ -157,23 +173,37 @@ public class Player extends Entity{
             int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
             interactNPC(npcIndex);
 
+            // Check Npc collision
+            int enemyIndex = gp.cChecker.checkEntity(this, gp.enemy);
+            contactEnemy(enemyIndex);
+
+            // Check event
+            gp.eventHandler.checkEvent();
+
             // If collision is false, player can move
-            if(!collisionOn){
+            if(!collisionOn && !keyH.enterPressed){
+                idle = false;
                 switch(direction){
                     case DIRECTION_UP:
+                        direction = DIRECTION_UP;
                         worldY -= speed;
                         break;
                     case DIRECTION_DOWN:
+                        direction = DIRECTION_DOWN;
                         worldY += speed;
                         break;
                     case DIRECTION_LEFT:
+                        direction = DIRECTION_LEFT;
                         worldX -= speed;
                         break;
                     case DIRECTION_RIGHT:
+                        direction = DIRECTION_RIGHT;
                         worldX += speed;
                         break;
                 }
             }
+
+            gp.keyH.enterPressed = false;
 
             spriteCounter++;
             if(spriteCounter > 16){
@@ -197,30 +227,69 @@ public class Player extends Entity{
             idle = true;
             switch(direction){
                 case DIRECTION_UP:
+                    direction = DIRECTION_UP;
                     break;
                 case DIRECTION_DOWN:
+                    direction = DIRECTION_DOWN;
                     break;
                 case DIRECTION_LEFT:
+                    direction = DIRECTION_LEFT;
                     break;
                 case DIRECTION_RIGHT:
+                    direction = DIRECTION_RIGHT;
                     break;
                 default:
                     break;
             }
         }
 
-
+        // Invincible counter
+        if(invincible){
+            invincibleCounter++;
+            if(invincibleCounter > 60){
+                invincible = false;
+                invincibleCounter = 0;
+            }
+        }
 
     }
 
     public void interactNPC(int i){
-        if(i != 999){
-            if(gp.keyH.enterPressed){
+
+        if(gp.keyH.enterPressed){
+            if(i != 999){
                 gp.gameState = gp.dialogueState;
                 gp.npc[i].speak();
             }
+            else{
+                attacking = true;
+            }
+
         }
-        gp.keyH.enterPressed = false;
+
+    }
+
+    public void attacking(){
+
+        spriteCounter++;
+        if(spriteCounter <= 15) {
+            spriteNum = 1;
+        }
+        if(spriteCounter > 15 && spriteCounter <= 30){
+            spriteNum = 2;
+        }
+        if(spriteCounter > 30 && spriteCounter <= 45){
+            spriteNum = 3;
+        }
+        if(spriteCounter > 45 && spriteCounter <= 60){
+            spriteNum = 4;
+        }
+        if(spriteCounter > 60){
+            spriteNum = 1;
+            spriteCounter = 0;
+            attacking = false;
+            idle = true;
+        }
     }
 
     public void pickupObject(int i){
@@ -259,6 +328,15 @@ public class Player extends Entity{
         }
     }
 
+    public void contactEnemy(int i){
+        if(i != 999){
+            if(!invincible){
+                life -= 1;
+                invincible = true;
+            }
+        }
+    }
+
     public void draw(Graphics2D g2){
 
         // g2.setColor(Color.white);
@@ -268,6 +346,10 @@ public class Player extends Entity{
         BufferedImage image = null;
         BufferedImage image_face = null;
         BufferedImage image_armor = null;
+
+        int tempScreenX = screenX;
+        int tempScreenY = screenY;
+
 
         if(!idle){
             switch(direction){
@@ -338,25 +420,52 @@ public class Player extends Entity{
                     }
                     break;
                 case DIRECTION_RIGHT:
-                    if(spriteNum == 1){
-                        image = right1;
-                        image_face = face_right1;
-                        image_armor = armor_walking_right1;
+                    if(!attacking){
+                        if(spriteNum == 1){
+                            image = right1;
+                            image_face = face_right1;
+                            image_armor = armor_walking_right1;
+                        }
+                        if(spriteNum == 2){
+                            image = right2;
+                            image_face = face_right2;
+                            image_armor = armor_walking_right2;
+                        }
+                        if(spriteNum == 3){
+                            image = right3;
+                            image_face = face_right1;
+                            image_armor = armor_walking_right3;
+                        }
+                        if(spriteNum == 4){
+                            image = right4;
+                            image_face = face_right2;
+                            image_armor = armor_walking_right4;
+                        }
+
                     }
-                    if(spriteNum == 2){
-                        image = right2;
-                        image_face = face_right2;
-                        image_armor = armor_walking_right2;
-                    }
-                    if(spriteNum == 3){
-                        image = right3;
-                        image_face = face_right1;
-                        image_armor = armor_walking_right3;
-                    }
-                    if(spriteNum == 4){
-                        image = right4;
-                        image_face = face_right2;
-                        image_armor = armor_walking_right4;
+                    if(attacking){
+                        tempScreenX = screenX - gp.tileSize / 2;
+                        tempScreenY = screenY - gp.tileSize / 2;
+                        if(spriteNum == 1){
+                            image = attack_right1;
+                            image_face = null;
+                            image_armor = null;
+                        }
+                        if(spriteNum == 2){
+                            image = attack_right2;
+                            image_face = null;
+                            image_armor = null;
+                        }
+                        if(spriteNum == 3){
+                            image = attack_right3;
+                            image_face = null;
+                            image_armor = null;
+                        }
+                        if(spriteNum == 4){
+                            image = attack_right4;
+                            image_face = null;
+                            image_armor = null;
+                        }
                     }
                     break;
                 default:
@@ -392,9 +501,27 @@ public class Player extends Entity{
             }
         }
 
-        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-        g2.drawImage(image_face, screenX, screenY, gp.tileSize, gp.tileSize, null);
-        g2.drawImage(image_armor, screenX, screenY, gp.tileSize, gp.tileSize, null);
+        if(invincible){
+            // Show invincible
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+        }
+
+        if(!attacking){
+
+            g2.drawImage(image, tempScreenX, tempScreenY, gp.tileSize, gp.tileSize, null);
+            g2.drawImage(image_face, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            g2.drawImage(image_armor, screenX, screenY, gp.tileSize, gp.tileSize, null);
+
+        }
+        else{
+
+            g2.drawImage(image, tempScreenX, tempScreenY, null);
+            g2.drawImage(image_face, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            g2.drawImage(image_armor, screenX, screenY, gp.tileSize, gp.tileSize, null);
+
+        }
+
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 
         // Show collision mask
         if(keyH.debugMode){
@@ -405,6 +532,10 @@ public class Player extends Entity{
                     solidArea.width,
                     solidArea.height
             );
+
+            g2.setFont(new Font("Arial", Font.PLAIN, 26));
+            g2.setColor(Color.white);
+            g2.drawString("Invincible: " + invincibleCounter, 10, 400);
         }
     }
 

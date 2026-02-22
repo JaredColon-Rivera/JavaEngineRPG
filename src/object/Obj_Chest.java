@@ -1,28 +1,23 @@
 package object;
 
+import entity.Entity;
 import main.GamePanel;
+import main.KeyHandler;
 
-import javax.imageio.ImageIO;
 import java.io.IOException;
-import java.util.Objects;
 
 import static util.ResourceUtil.getResource;
+import static util.constants.KeyConstants.DIRECTION_DOWN;
 
-public class Obj_Chest extends ParentObject{
+public class Obj_Chest extends Entity {
 
-    GamePanel gp;
+    public Obj_Chest(GamePanel gp, KeyHandler keyH) {
 
-    public Obj_Chest(GamePanel gp) {
-
-        this.gp = gp;
+        super(gp, keyH);
 
         name = "Chest";
-        try{
-            image = getResource("/objects/chest.png");
-            image = resUtil.scaleImage(image, gp.tileSize, gp.tileSize);
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        idle_down1 = setup("/objects/env/chest.png");
+        direction = DIRECTION_DOWN;
         collision = true;
     }
 }
