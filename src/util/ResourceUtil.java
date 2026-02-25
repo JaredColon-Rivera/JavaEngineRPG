@@ -21,4 +21,61 @@ public class ResourceUtil {
         return scaledImage;
     }
 
+    public static String getBasePath(
+            String base_template, // spr_base_walking
+            String base_action, // spr_base_walk
+            String base_direction, // down
+            String image_path, // base_walk
+            String image_direction, // down
+            int frame // 1
+            ){
+
+        return String.format("/spr_bases/%s/%s_%s/%s_%s%d.png",
+                base_template,
+                base_action,
+                base_direction,
+                image_path,
+                image_direction,
+                frame
+                );
+    }
+
+    public static String getFacePath(
+            String character, // player
+            String base_face, // spr_lemon_head_face
+            String base_direction, // down
+            String image_path, // lemon_head_face
+            String image_direction, // down
+            int frame // 1
+    ){
+
+        return String.format("/%s/spr_faces/%s_%s/%s_%s%d.png",
+                character,
+                base_face,
+                base_direction,
+                image_path,
+                image_direction,
+                frame
+        );
+    }
+
+    public static String getArmorPath(
+            String armor_template, // armor_walking
+            String armor_action, // spr_armor_walking
+            String base_direction, // down
+            String image_path, // armor_leather_walking
+            String image_direction, // down
+            int frame // 1
+    ){
+
+        return String.format("/spr_armor/%s/%s_%s/%s_%s%d.png",
+                armor_template,
+                armor_action,
+                base_direction,
+                image_path,
+                image_direction,
+                frame
+        );
+    }
+
 }

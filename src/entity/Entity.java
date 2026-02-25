@@ -52,6 +52,21 @@ public class Entity {
     public int maxLife;
     public int life;
 
+    BufferedImage[] walk_left = new BufferedImage[4];
+    BufferedImage[] walk_right = new BufferedImage[4];
+    BufferedImage[] walk_up = new BufferedImage[4];
+    BufferedImage[] walk_down = new BufferedImage[4];
+
+    BufferedImage[] armor_walking_left = new BufferedImage[4];
+    BufferedImage[] armor_walking_right = new BufferedImage[4];
+    BufferedImage[] armor_walking_up = new BufferedImage[4];
+    BufferedImage[] armor_walking_down = new BufferedImage[4];
+
+    BufferedImage[] face_left = new BufferedImage[2];
+    BufferedImage[] face_right = new BufferedImage[2];
+    BufferedImage[] face_up = new BufferedImage[2];
+    BufferedImage[] face_down = new BufferedImage[2];
+
     public BufferedImage
 
             // Face sprite
@@ -86,8 +101,15 @@ public class Entity {
             left1, left2, left3, left4,
             right1, right2, right3, right4,
 
+    // Weapons
+    sword_slash_left1, sword_slash_left2, sword_slash_left3, sword_slash_left4,
+
+    // Action
+    attack_slash_left1, attack_slash_left2, attack_slash_left3, attack_slash_left4,
+
     // Attacking
-    attack_right1, attack_right2, attack_right3, attack_right4;
+    attack_right1, attack_right2, attack_right3, attack_right4,
+    attack_left1, attack_left2, attack_left3, attack_left4;
 
     public Entity(GamePanel gp, KeyHandler keyH){
         this.gp = gp;

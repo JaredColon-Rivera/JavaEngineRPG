@@ -2,15 +2,13 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
-import util.ResourceUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
+import static util.ResourceUtil.*;
 import static util.constants.KeyConstants.*;
 import static util.constants.SpriteConstants.*;
-import static util.ResourceUtil.*;
 
 public class Player extends Entity{
 
@@ -21,6 +19,10 @@ public class Player extends Entity{
     public final int screenY;
 
     public int hasKey = 0;
+
+    String base_template;
+    String base_action;
+    String image_path;
 
     public Player (GamePanel gp, KeyHandler keyH){
 
@@ -56,19 +58,22 @@ public class Player extends Entity{
 
     public void getPlayerImage(){
 
-        // Faces
-        face_down1 = setup(FACE_DOWN_1);
-        face_down2 = setup(FACE_DOWN_2);
+        // Idle Face
+        face_down1 = setup(getFacePath("player", "spr_lemon_head_face", DIRECTION_DOWN, "lemon_head_face", DIRECTION_DOWN, 1));
+        face_up1 = setup(getFacePath("player", "spr_lemon_head_face", DIRECTION_UP, "lemon_head_face", DIRECTION_UP, 1));
+        face_left1 = setup(getFacePath("player", "spr_lemon_head_face", DIRECTION_LEFT, "lemon_head_face", DIRECTION_LEFT, 1));
+        face_right1 = setup(getFacePath("player", "spr_lemon_head_face", DIRECTION_RIGHT, "lemon_head_face", DIRECTION_RIGHT, 1));
 
-        face_up1 = setup(FACE_UP_1);
-        face_up2 = setup(FACE_UP_2);
-
-        face_left1 = setup(FACE_LEFT_1);
-        face_left2 = setup(FACE_LEFT_2);
-
-        face_right1 = setup(FACE_RIGHT_1);
-        face_right2 = setup(FACE_RIGHT_2);
-
+        // Walking Faces
+        for (int i = 0; i < 2; i++) {
+            base_template = "player";
+            base_action = "spr_lemon_head_face";
+            image_path = "lemon_head_face";
+            face_up[i] = setup(getFacePath(base_template, base_action, DIRECTION_UP, image_path, DIRECTION_UP, i + 1));
+            face_down[i] = setup(getFacePath(base_template, base_action, DIRECTION_DOWN, image_path, DIRECTION_DOWN, i + 1));
+            face_left[i] = setup(getFacePath(base_template, base_action, DIRECTION_LEFT, image_path, DIRECTION_LEFT, i + 1));
+            face_right[i] = setup(getFacePath(base_template, base_action, DIRECTION_RIGHT, image_path, DIRECTION_RIGHT, i + 1));
+        }
 
         // Armor Idle
         armor_idle_down1 = setup(ARMOR_IDLE_DOWN_1);
@@ -76,56 +81,33 @@ public class Player extends Entity{
         armor_idle_left1 = setup(ARMOR_IDLE_LEFT_1);
         armor_idle_right1 = setup(ARMOR_IDLE_RIGHT_1);
 
-
         // Base Idle
-        idle_down1 = setup(IDLE_DOWN_1);
-        idle_up1 = setup(IDLE_UP_1);
-        idle_left1 = setup(IDLE_LEFT_1);
-        idle_right1 = setup(IDLE_RIGHT_1);
-
-
-        // Armor Walking
-        armor_walking_down1 = setup(ARMOR_WALK_DOWN_1);
-        armor_walking_down2 = setup(ARMOR_WALK_DOWN_2);
-        armor_walking_down3 = setup(ARMOR_WALK_DOWN_3);
-        armor_walking_down4 = setup(ARMOR_WALK_DOWN_4);
-
-        armor_walking_up1 = setup(ARMOR_WALK_UP_1);
-        armor_walking_up2 = setup(ARMOR_WALK_UP_2);
-        armor_walking_up3 = setup(ARMOR_WALK_UP_3);
-        armor_walking_up4 = setup(ARMOR_WALK_UP_4);
-
-        armor_walking_left1 = setup(ARMOR_WALK_LEFT_1);
-        armor_walking_left2 = setup(ARMOR_WALK_LEFT_2);
-        armor_walking_left3 = setup(ARMOR_WALK_LEFT_3);
-        armor_walking_left4 = setup(ARMOR_WALK_LEFT_4);
-
-        armor_walking_right1 = setup(ARMOR_WALK_RIGHT_1);
-        armor_walking_right2 = setup(ARMOR_WALK_RIGHT_2);
-        armor_walking_right3 = setup(ARMOR_WALK_RIGHT_3);
-        armor_walking_right4 = setup(ARMOR_WALK_RIGHT_4);
-
+        idle_down1 = setup(getBasePath("spr_base_idle", "spr_base_idle", DIRECTION_DOWN, "base_idle", DIRECTION_DOWN, 1));
+        idle_up1 = setup(getBasePath("spr_base_idle", "spr_base_idle", DIRECTION_UP, "base_idle", DIRECTION_UP, 1));
+        idle_left1 = setup(getBasePath("spr_base_idle", "spr_base_idle", DIRECTION_LEFT, "base_idle", DIRECTION_LEFT, 1));
+        idle_right1 = setup(getBasePath("spr_base_idle", "spr_base_idle", DIRECTION_RIGHT, "base_idle", DIRECTION_RIGHT, 1));
 
         // Base Walking
-        up1 = setup(WALK_UP_1);
-        up2 = setup(WALK_UP_2);
-        up3 = setup(WALK_UP_3);
-        up4 = setup(WALK_UP_4);
+        for (int i = 0; i < 4; i++) {
+            base_template = "spr_base_walking";
+            base_action = "spr_base_walk";
+            image_path = "base_walk";
+            walk_up[i] = setup(getBasePath(base_template, base_action, DIRECTION_UP, image_path, DIRECTION_UP, i + 1));
+            walk_down[i] = setup(getBasePath(base_template, base_action, DIRECTION_DOWN, image_path, DIRECTION_DOWN, i + 1));
+            walk_left[i] = setup(getBasePath(base_template, base_action, DIRECTION_LEFT, image_path, DIRECTION_LEFT, i + 1));
+            walk_right[i] = setup(getBasePath(base_template, base_action, DIRECTION_RIGHT, image_path, DIRECTION_RIGHT, i + 1));
+        }
 
-        down1 = setup(WALK_DOWN_1);
-        down2 = setup(WALK_DOWN_2);
-        down3 = setup(WALK_DOWN_3);
-        down4 = setup(WALK_DOWN_4);
-
-        left1 = setup(WALK_LEFT_1);
-        left2 = setup(WALK_LEFT_2);
-        left3 = setup(WALK_LEFT_3);
-        left4 = setup(WALK_LEFT_4);
-
-        right1 = setup(WALK_RIGHT_1);
-        right2 = setup(WALK_RIGHT_2);
-        right3 = setup(WALK_RIGHT_3);
-        right4 = setup(WALK_RIGHT_4);
+        // Leather Armor Walking
+        for (int i = 0; i < 4; i++) {
+            base_template = "armor_walking";
+            base_action = "spr_armor_walking";
+            image_path = "armor_leather_walking";
+            armor_walking_up[i] = setup(getArmorPath(base_template, base_action, DIRECTION_UP, image_path, DIRECTION_UP, i + 1));
+            armor_walking_down[i] = setup(getArmorPath(base_template, base_action, DIRECTION_DOWN, image_path, DIRECTION_DOWN, i + 1));
+            armor_walking_left[i] = setup(getArmorPath(base_template, base_action, DIRECTION_LEFT, image_path, DIRECTION_LEFT, i + 1));
+            armor_walking_right[i] = setup(getArmorPath(base_template, base_action, DIRECTION_RIGHT, image_path, DIRECTION_RIGHT, i + 1));
+        }
 
     }
 
@@ -135,6 +117,22 @@ public class Player extends Entity{
         attack_right2 = setup(ATTACK_RIGHT_2, gp.tileSize * 2, gp.tileSize * 2);
         attack_right3 = setup(ATTACK_RIGHT_3, gp.tileSize * 2, gp.tileSize * 2);
         attack_right4 = setup(ATTACK_RIGHT_4, gp.tileSize * 2, gp.tileSize * 2);
+
+        attack_left1 = setup(ATTACK_LEFT_1, gp.tileSize * 2, gp.tileSize * 2);
+        attack_left2 = setup(ATTACK_LEFT_2, gp.tileSize * 2, gp.tileSize * 2);
+        attack_left3 = setup(ATTACK_LEFT_3, gp.tileSize * 2, gp.tileSize * 2);
+        attack_left4 = setup(ATTACK_LEFT_4, gp.tileSize * 2, gp.tileSize * 2);
+
+        attack_slash_left1 = setup(ATTACK_SLASH_LEFT_1, gp.tileSize * 2, gp.tileSize * 2);
+        attack_slash_left2 = setup(ATTACK_SLASH_LEFT_2, gp.tileSize * 2, gp.tileSize * 2);
+        attack_slash_left3 = setup(ATTACK_SLASH_LEFT_3, gp.tileSize * 2, gp.tileSize * 2);
+        attack_slash_left4 = setup(ATTACK_SLASH_LEFT_4, gp.tileSize * 2, gp.tileSize * 2);
+
+        sword_slash_left1 = setup(SWORD_SLASH_LEFT_1, gp.tileSize * 2, gp.tileSize * 2);
+        sword_slash_left2 = setup(SWORD_SLASH_LEFT_2, gp.tileSize * 2, gp.tileSize * 2);
+        sword_slash_left3 = setup(SWORD_SLASH_LEFT_3, gp.tileSize * 2, gp.tileSize * 2);
+        sword_slash_left4 = setup(SWORD_SLASH_LEFT_4, gp.tileSize * 2, gp.tileSize * 2);
+
     }
 
     public void update(){
@@ -346,6 +344,8 @@ public class Player extends Entity{
         BufferedImage image = null;
         BufferedImage image_face = null;
         BufferedImage image_armor = null;
+        BufferedImage image_weapon = null;
+        BufferedImage image_attack = null;
 
         int tempScreenX = screenX;
         int tempScreenY = screenY;
@@ -355,91 +355,125 @@ public class Player extends Entity{
             switch(direction){
                 case DIRECTION_UP:
                     if(spriteNum == 1){
-                        image = up1;
-                        image_face = face_up1;
-                        image_armor = armor_walking_up1;
+                        image = walk_up[0];
+                        image_face = face_up[0];
+                        image_armor = armor_walking_up[0];
                     }
                     if(spriteNum == 2){
-                        image = up2;
-                        image_face = face_up2;
-                        image_armor = armor_walking_up2;
+                        image = walk_up[1];
+                        image_face = face_up[1];
+                        image_armor = armor_walking_up[1];
                     }
                     if(spriteNum == 3){
-                        image = up3;
-                        image_face = face_up1;
-                        image_armor = armor_walking_up3;
+                        image = walk_up[2];
+                        image_face = face_up[0];
+                        image_armor = armor_walking_up[2];
                     }
                     if(spriteNum == 4){
-                        image = up4;
-                        image_face = face_up2;
-                        image_armor = armor_walking_up4;
+                        image = walk_up[3];
+                        image_face = face_up[1];
+                        image_armor = armor_walking_up[3];
                     }
                     break;
                 case DIRECTION_DOWN:
                     if(spriteNum == 1){
-                        image = down1;
-                        image_face = face_down1;
-                        image_armor = armor_walking_down1;
+                        image = walk_up[0];
+                        image_face = face_down[0];
+                        image_armor = armor_walking_down[0];
                     }
                     if(spriteNum == 2){
-                        image = down2;
-                        image_face = face_down2;
-                        image_armor = armor_walking_down2;
+                        image = walk_up[1];
+                        image_face = face_down[1];
+                        image_armor = armor_walking_down[1];
                     }
                     if(spriteNum == 3){
-                        image = down3;
-                        image_face = face_down1;
-                        image_armor = armor_walking_down3;
+                        image = walk_up[2];
+                        image_face = face_down[0];
+                        image_armor = armor_walking_down[2];
                     }
                     if(spriteNum == 4){
-                        image = down4;
-                        image_face = face_down2;
-                        image_armor = armor_walking_down4;
+                        image = walk_up[3];
+                        image_face = face_down[1];
+                        image_armor = armor_walking_down[3];
                     }
                     break;
                 case DIRECTION_LEFT:
-                    if(spriteNum == 1){
-                        image = left1;
-                        image_face = face_left1;
-                        image_armor = armor_walking_left1;
+                    if(!attacking){
+                        if(spriteNum == 1){
+                            image = walk_left[0];
+                            image_face = face_left[0];
+                            image_armor = armor_walking_left[0];
+                        }
+                        if(spriteNum == 2){
+                            image = walk_left[1];
+                            image_face = face_left[1];
+                            image_armor = armor_walking_left[1];
+                        }
+                        if(spriteNum == 3){
+                            image = walk_left[2];
+                            image_face = face_left[0];
+                            image_armor = armor_walking_left[2];
+                        }
+                        if(spriteNum == 4){
+                            image = walk_left[3];
+                            image_face = face_left[1];
+                            image_armor = armor_walking_left[3];
+                        }
                     }
-                    if(spriteNum == 2){
-                        image = left2;
-                        image_face = face_left2;
-                        image_armor = armor_walking_left2;
-                    }
-                    if(spriteNum == 3){
-                        image = left3;
-                        image_face = face_left1;
-                        image_armor = armor_walking_left3;
-                    }
-                    if(spriteNum == 4){
-                        image = left4;
-                        image_face = face_left2;
-                        image_armor = armor_walking_left4;
+                    if(attacking){
+                        tempScreenX = screenX - gp.tileSize / 2;
+                        tempScreenY = screenY - gp.tileSize / 2;
+                        if(spriteNum == 1){
+                            image = attack_left1;
+                            image_face = null;
+                            image_armor = null;
+                            image_weapon = sword_slash_left1;
+                            image_attack = attack_slash_left1;
+                        }
+                        if(spriteNum == 2){
+                            image = attack_left2;
+                            image_face = null;
+                            image_armor = null;
+                            image_weapon = sword_slash_left2;
+                            image_attack = attack_slash_left2;
+                        }
+                        if(spriteNum == 3){
+                            image = attack_left3;
+                            image_face = null;
+                            image_armor = null;
+                            image_weapon = sword_slash_left3;
+                            image_attack = attack_slash_left3;
+                        }
+                        if(spriteNum == 4){
+                            image = attack_left4;
+                            image_face = null;
+                            image_armor = null;
+                            image_weapon = sword_slash_left4;
+                            image_attack = attack_slash_left4;
+                        }
                     }
                     break;
                 case DIRECTION_RIGHT:
                     if(!attacking){
                         if(spriteNum == 1){
-                            image = right1;
-                            image_face = face_right1;
-                            image_armor = armor_walking_right1;
+                            image = walk_right[0];
+                            image_face = face_right[0];
+                            image_armor = armor_walking_right[0];
                         }
                         if(spriteNum == 2){
-                            image = right2;
-                            image_face = face_right2;
-                            image_armor = armor_walking_right2;
+                            image = walk_right[1];
+                            image_face = face_right[1];
+                            image_armor = armor_walking_right[1];
                         }
                         if(spriteNum == 3){
-                            image = right3;
-                            image_face = face_right1;
-                            image_armor = armor_walking_right3;
+                            image = walk_right[2];
+                            image_face = face_right[0];
+                            image_armor = armor_walking_right[2];
                         }
                         if(spriteNum == 4){
-                            image = right4;
-                            image_face = face_right2;
-                            image_armor = armor_walking_right4;
+                            image = walk_right[3];
+                            image_face = face_right[1];
+                            image_armor = armor_walking_right[3];
                         }
 
                     }
@@ -518,6 +552,8 @@ public class Player extends Entity{
             g2.drawImage(image, tempScreenX, tempScreenY, null);
             g2.drawImage(image_face, screenX, screenY, gp.tileSize, gp.tileSize, null);
             g2.drawImage(image_armor, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            g2.drawImage(image_weapon, tempScreenX, tempScreenY, null);
+            g2.drawImage(image_attack, tempScreenX, tempScreenY, null);
 
         }
 
