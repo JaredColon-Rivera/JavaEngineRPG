@@ -4,8 +4,7 @@ import java.awt.*;
 import java.sql.Array;
 import java.util.Objects;
 
-import static util.constants.KeyConstants.DIRECTION_RIGHT;
-import static util.constants.KeyConstants.DIRECTION_UP;
+import static util.constants.KeyConstants.*;
 
 public class EventHandler {
 
@@ -56,14 +55,14 @@ public class EventHandler {
 
         if(canTouchEvent){
 
-            if(hit(12, 10, DIRECTION_RIGHT)) damagePit(gp.dialogueState);
+            if(hit(12, 10, Direction.RIGHT)) damagePit(gp.dialogueState);
 
         }
 
 
-        if(hit(13, 10, DIRECTION_UP)) healthPool(gp.dialogueState);
+        if(hit(13, 10, Direction.UP)) healthPool(gp.dialogueState);
 
-        if(hit(12, 11, DIRECTION_RIGHT)) teleport(gp.dialogueState);
+        if(hit(12, 11, Direction.UP)) teleport(gp.dialogueState);
 
     }
 
@@ -86,7 +85,7 @@ public class EventHandler {
 
     }
 
-    public boolean hit(int col, int row, String reqDirection){
+    public boolean hit(int col, int row, Direction reqDirection){
         boolean hit = false;
 
         // Getting player position
@@ -96,7 +95,7 @@ public class EventHandler {
         eventRect[col][row].y = row * gp.tileSize + eventRect[col][row].y;
 
         if(gp.player.solidArea.intersects(eventRect[col][row]) && !eventRect[col][row].eventDone){
-            if(gp.player.direction.contentEquals(reqDirection) || reqDirection.contentEquals("any")){
+            if(gp.player.direction == reqDirection){
 
                 hit = true;
 

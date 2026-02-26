@@ -6,6 +6,8 @@ import main.KeyHandler;
 
 import java.util.Random;
 
+import static util.ResourceUtil.getBasePath;
+import static util.ResourceUtil.getMonsterPath;
 import static util.constants.KeyConstants.*;
 import static util.constants.KeyConstants.DIRECTION_RIGHT;
 
@@ -33,22 +35,15 @@ public class Enemy_GreenSlime extends Entity {
     }
 
     public void getImage(){
-        up1 = setup("/enemies/greenslime_down_1.png");
-        up2 = setup("/enemies/greenslime_down_2.png");
-        up3 = setup("/enemies/greenslime_down_1.png");
-        up4 = setup("/enemies/greenslime_down_2.png");
-        down1 = setup("/enemies/greenslime_down_1.png");
-        down2 = setup("/enemies/greenslime_down_2.png");
-        down3 = setup("/enemies/greenslime_down_1.png");
-        down4 = setup("/enemies/greenslime_down_2.png");
-        left1 = setup("/enemies/greenslime_down_1.png");
-        left2 = setup("/enemies/greenslime_down_2.png");
-        left3 = setup("/enemies/greenslime_down_1.png");
-        left4 = setup("/enemies/greenslime_down_2.png");
-        right1 = setup("/enemies/greenslime_down_1.png");
-        right2 = setup("/enemies/greenslime_down_2.png");
-        right3 = setup("/enemies/greenslime_down_1.png");
-        right4 = setup("/enemies/greenslime_down_2.png");
+
+        // Base Walking
+        for (int i = 0; i < 4; i++) {
+            base_template = "greenslime";
+            walk_up[i] = setup(getMonsterPath(base_template, Direction.DOWN, i + 1));
+            walk_down[i] = setup(getMonsterPath(base_template, Direction.DOWN, i + 1));
+            walk_left[i] = setup(getMonsterPath(base_template, Direction.DOWN, i + 1));
+            walk_right[i] = setup(getMonsterPath(base_template, Direction.DOWN, i + 1));;
+        }
     }
 
     public void setAction(){
@@ -62,16 +57,16 @@ public class Enemy_GreenSlime extends Entity {
             int i = random.nextInt(100) + 1;
 
             if(i <= 25){
-                direction = DIRECTION_UP;
+                direction = Direction.UP;
             }
             if(i > 25 && i <= 50){
-                direction = DIRECTION_DOWN;
+                direction = Direction.DOWN;
             }
             if(i > 50 && i <= 75){
-                direction = DIRECTION_LEFT;
+                direction = Direction.LEFT;
             }
             if(i > 75 && i <= 100){
-                direction = DIRECTION_RIGHT;
+                direction = Direction.RIGHT;
             }
 
             actionLockCounter = 0;

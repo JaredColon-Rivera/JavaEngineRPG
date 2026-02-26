@@ -2,8 +2,7 @@ package main;
 
 import entity.Entity;
 import object.Obj_Heart;
-import object.Obj_Key;
-import object.ParentObject;
+import util.constants.KeyConstants.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -193,9 +192,9 @@ public class UI {
         // PLAYER IMAGE
         x = gp.screenWidth/2 - (gp.tileSize * 2)/2;
         y += gp.tileSize * 2;
-        g2.drawImage(gp.player.down1, x, y, gp.tileSize * 2, gp.tileSize * 2, null);
-        g2.drawImage(gp.player.face_down1, x, y, gp.tileSize * 2, gp.tileSize * 2, null);
-        g2.drawImage(gp.player.armor_idle_down1, x, y, gp.tileSize * 2, gp.tileSize * 2, null);
+        g2.drawImage(gp.player.baseIdle.get(Direction.DOWN), x, y, gp.tileSize * 2, gp.tileSize * 2, null);
+        g2.drawImage(gp.player.faceIdle.get(Direction.DOWN), x, y, gp.tileSize * 2, gp.tileSize * 2, null);
+        g2.drawImage(gp.player.armorIdle.get(Direction.DOWN), x, y, gp.tileSize * 2, gp.tileSize * 2, null);
 
         // MENU
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 40F));

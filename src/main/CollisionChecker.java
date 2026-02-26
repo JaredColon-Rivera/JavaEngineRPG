@@ -27,7 +27,7 @@ public class CollisionChecker {
         int tileNum1, tileNum2;
 
         switch(entity.direction){
-            case "up":
+            case Direction.UP:
                 entityTopRow = (entityTopWorldY - entity.speed)/gp.tileSize;
                 tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
                 tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
@@ -35,7 +35,7 @@ public class CollisionChecker {
                     entity.collisionOn = true;
                 }
                 break;
-            case "down":
+            case Direction.DOWN:
                 entityBottomRow = (entityBottomWorldY + entity.speed)/gp.tileSize;
                 tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
                 tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
@@ -43,7 +43,7 @@ public class CollisionChecker {
                     entity.collisionOn = true;
                 }
                 break;
-            case "left":
+            case Direction.LEFT:
                 entityLeftCol = (entityLeftWorldX - entity.speed)/gp.tileSize;
                 tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
                 tileNum2 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
@@ -51,7 +51,7 @@ public class CollisionChecker {
                     entity.collisionOn = true;
                 }
                 break;
-            case "right":
+            case Direction.RIGHT:
                 entityRightCol = (entityRightWorldX + entity.speed)/gp.tileSize;
                 tileNum1 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
                 tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
@@ -79,16 +79,16 @@ public class CollisionChecker {
                 gp.obj[i].solidArea.y = gp.obj[i].worldY + gp.obj[i].solidArea.y;
 
                 switch(entity.direction){
-                    case "up":
+                    case Direction.UP:
                         entity.solidArea.y -= entity.speed;
                         break;
-                    case "down":
+                    case Direction.DOWN:
                         entity.solidArea.y += entity.speed;
                         break;
-                    case "left":
+                    case Direction.LEFT:
                         entity.solidArea.x -= entity.speed;
                         break;
-                    case "right":
+                    case Direction.RIGHT:
                         entity.solidArea.x += entity.speed;
                         break;
                 }
@@ -129,16 +129,16 @@ public class CollisionChecker {
                 target[i].solidArea.y = target[i].worldY + target[i].solidArea.y;
 
                 switch(entity.direction){
-                    case DIRECTION_UP:
+                    case Direction.UP:
                         entity.solidArea.y -= entity.speed;
                         break;
-                    case DIRECTION_DOWN:
+                    case Direction.DOWN:
                         entity.solidArea.y += entity.speed;
                         break;
-                    case DIRECTION_LEFT:
+                    case Direction.LEFT:
                         entity.solidArea.x -= entity.speed;
                         break;
-                    case DIRECTION_RIGHT:
+                    case Direction.RIGHT:
                         entity.solidArea.x += entity.speed;
                         break;
                 }
@@ -146,7 +146,7 @@ public class CollisionChecker {
                 if(entity.solidArea.intersects(target[i].solidArea)){
                     if(target[i] != entity){
                         entity.collisionOn = true;
-                        index = 0;
+                        index = i;
                     }
                 }
 
@@ -173,16 +173,16 @@ public class CollisionChecker {
         gp.player.solidArea.y = gp.player.worldY + gp.player.solidArea.y;
 
         switch(entity.direction){
-            case DIRECTION_UP:
+            case Direction.UP:
                 entity.solidArea.y -= entity.speed;
                 break;
-            case DIRECTION_DOWN:
+            case Direction.DOWN:
                 entity.solidArea.y += entity.speed;
                 break;
-            case DIRECTION_LEFT:
+            case Direction.LEFT:
                 entity.solidArea.x -= entity.speed;
                 break;
-            case DIRECTION_RIGHT:
+            case Direction.RIGHT:
                 entity.solidArea.x += entity.speed;
                 break;
         }

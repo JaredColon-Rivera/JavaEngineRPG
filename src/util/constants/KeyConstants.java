@@ -13,6 +13,13 @@ public class KeyConstants {
     public static final int KEY_ENTER = KeyEvent.VK_ENTER;
     public static final int KEY_ATTACK = KeyEvent.VK_K;
 
+    public enum Direction {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT;
+    }
+
     public static final String DIRECTION_UP = "up";
     public static final String DIRECTION_DOWN = "down";
     public static final String DIRECTION_LEFT = "left";

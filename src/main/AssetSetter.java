@@ -75,6 +75,7 @@ public class AssetSetter {
         gp.enemy[1] = new Enemy_GreenSlime(gp, keyH);
         gp.enemy[1].worldX = gp.tileSize * 14;
         gp.enemy[1].worldY = gp.tileSize * 14;
+
     }
 
 }

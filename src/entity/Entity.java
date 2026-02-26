@@ -7,6 +7,8 @@ import util.ResourceUtil;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static util.ResourceUtil.getResource;
 import static util.constants.KeyConstants.*;
@@ -19,7 +21,7 @@ public class Entity {
     public int worldX, worldY;
     public int speed;
     public boolean idle = true;
-    public String direction = DIRECTION_DOWN;
+    public Direction direction = Direction.DOWN;
 
     public final int screenX;
     public final int screenY;
@@ -31,12 +33,26 @@ public class Entity {
     public String name;
     public boolean collision = false;
 
+    public String base_template;
+    public String base_action;
+    public String image_path;
+
+    public String armor_base_template;
+    public String armor_base_action;
+    public String armor_image_path;
+
     // Combat
     public boolean attacking = false;
+    boolean alive = true;
+    boolean dying = false;
+    int dyingCounter = 0;
 
     // Collision
     public Rectangle solidArea = new Rectangle(4, 20, 40, 20);
     public int solidAreaDefaultX, solidAreaDefaultY;
+
+    // Combat
+    public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
 
     public boolean collisionOn = false;
 
@@ -48,14 +64,36 @@ public class Entity {
     String[] dialogues = new String[20];
     int dialogueIndex = 0;
 
+    // Animation
+    Map<Direction, BufferedImage[]> walkAnimation = new HashMap<>();
+    Map<Direction, BufferedImage[]> faceAnimation = new HashMap<>();
+    Map<Direction, BufferedImage[]> armorWalkAnimation = new HashMap<>();
+    Map<Direction, BufferedImage[]> baseCombatAnimation = new HashMap<>();
+    Map<Direction, BufferedImage[]> baseCombatSlashAnimation = new HashMap<>();
+    Map<Direction, BufferedImage[]> baseCombatSwordSlashAnimation = new HashMap<>();
+
+    Map<Direction, BufferedImage> idleImages = new HashMap<>();
+
+    public BufferedImage[] walkFrames = new BufferedImage[4];
+    public BufferedImage[] faceFrames = new BufferedImage[2];
+    public BufferedImage[] armorFrames = new BufferedImage[4];
+    public BufferedImage[] combatFrames = new BufferedImage[4];
+    public BufferedImage[] slashFrames = new BufferedImage[4];
+    public BufferedImage[] swordSlashFrames = new BufferedImage[4];
+
+    public Map<Direction, BufferedImage> faceIdle = new HashMap<>();
+    public Map<Direction, BufferedImage> armorIdle = new HashMap<>();
+    public Map<Direction, BufferedImage> baseIdle = new HashMap<>();
+
+
     // CHARACTER STATUS
     public int maxLife;
     public int life;
 
-    BufferedImage[] walk_left = new BufferedImage[4];
-    BufferedImage[] walk_right = new BufferedImage[4];
-    BufferedImage[] walk_up = new BufferedImage[4];
-    BufferedImage[] walk_down = new BufferedImage[4];
+    public BufferedImage[] walk_left = new BufferedImage[4];
+    public BufferedImage[] walk_right = new BufferedImage[4];
+    public BufferedImage[] walk_up = new BufferedImage[4];
+    public BufferedImage[] walk_down = new BufferedImage[4];
 
     BufferedImage[] armor_walking_left = new BufferedImage[4];
     BufferedImage[] armor_walking_right = new BufferedImage[4];
@@ -65,51 +103,15 @@ public class Entity {
     BufferedImage[] face_left = new BufferedImage[2];
     BufferedImage[] face_right = new BufferedImage[2];
     BufferedImage[] face_up = new BufferedImage[2];
-    BufferedImage[] face_down = new BufferedImage[2];
+    public BufferedImage[] face_down = new BufferedImage[2];
 
     public BufferedImage
 
-            // Face sprite
-            face_down1,
-            face_down2,
-            face_up1,
-            face_up2,
-            face_left1,
-            face_left2,
-            face_right1,
-            face_right2,
+    // Idle Armor sprites
+    armor_idle_down1, armor_idle_up1, armor_idle_left1, armor_idle_right1,
 
-    // Armor sprite
-    armor_idle_down1,
-            armor_idle_up1,
-            armor_idle_left1,
-            armor_idle_right1,
-            armor_walking_down1, armor_walking_down2, armor_walking_down3, armor_walking_down4,
-            armor_walking_up1, armor_walking_up2, armor_walking_up3, armor_walking_up4,
-            armor_walking_left1, armor_walking_left2, armor_walking_left3, armor_walking_left4,
-            armor_walking_right1, armor_walking_right2, armor_walking_right3, armor_walking_right4,
-
-    // Idle sprites
-    idle_up1,
-            idle_down1,
-            idle_left1,
-            idle_right1,
-
-    // Walking
-    up1, up2, up3, up4,
-            down1, down2, down3, down4,
-            left1, left2, left3, left4,
-            right1, right2, right3, right4,
-
-    // Weapons
-    sword_slash_left1, sword_slash_left2, sword_slash_left3, sword_slash_left4,
-
-    // Action
-    attack_slash_left1, attack_slash_left2, attack_slash_left3, attack_slash_left4,
-
-    // Attacking
-    attack_right1, attack_right2, attack_right3, attack_right4,
-    attack_left1, attack_left2, attack_left3, attack_left4;
+    // Idle Base sprites
+    idle_up1, idle_down1, idle_left1, idle_right1;
 
     public Entity(GamePanel gp, KeyHandler keyH){
         this.gp = gp;
@@ -163,17 +165,17 @@ public class Entity {
         dialogueIndex++;
 
         switch(gp.player.direction){
-            case DIRECTION_UP:
-                direction = DIRECTION_DOWN;
+            case Direction.UP:
+                direction = Direction.DOWN;
                 break;
-            case DIRECTION_DOWN:
-                direction = DIRECTION_UP;
+            case Direction.DOWN:
+                direction = Direction.UP;
                 break;
-            case DIRECTION_LEFT:
-                direction = DIRECTION_RIGHT;
+            case Direction.LEFT:
+                direction = Direction.RIGHT;
                 break;
-            case DIRECTION_RIGHT:
-                direction = DIRECTION_LEFT;
+            case Direction.RIGHT:
+                direction = Direction.LEFT;
                 break;
 
         }
@@ -206,16 +208,16 @@ public class Entity {
         // If collision is false, player can move
         if(!collisionOn){
             switch(direction){
-                case DIRECTION_UP:
+                case Direction.UP:
                     worldY -= speed;
                     break;
-                case DIRECTION_DOWN:
+                case Direction.DOWN:
                     worldY += speed;
                     break;
-                case DIRECTION_LEFT:
+                case Direction.LEFT:
                     worldX -= speed;
                     break;
-                case DIRECTION_RIGHT:
+                case Direction.RIGHT:
                     worldX += speed;
                     break;
             }
@@ -238,6 +240,15 @@ public class Entity {
             spriteCounter = 0;
         }
 
+        // Invincible counter
+        if(invincible){
+            invincibleCounter++;
+            if(invincibleCounter > 40){
+                invincible = false;
+                invincibleCounter = 0;
+            }
+        }
+
     }
 
     public void draw(Graphics2D g2){
@@ -256,92 +267,92 @@ public class Entity {
 
             if (!idle) {
                 switch (direction) {
-                    case DIRECTION_UP:
+                    case Direction.UP:
                         if (spriteNum == 1) {
-                            image = up1;
-                            image_face = face_up1;
-                            image_armor = armor_walking_up1;
+                            image = walk_up[0];
+                            image_face = face_up[0];
+                            image_armor = armor_walking_up[0];
                         }
                         if (spriteNum == 2) {
-                            image = up2;
-                            image_face = face_up2;
-                            image_armor = armor_walking_up2;
+                            image = walk_up[1];
+                            image_face = face_up[1];
+                            image_armor = armor_walking_up[1];
                         }
                         if (spriteNum == 3) {
-                            image = up3;
-                            image_face = face_up1;
-                            image_armor = armor_walking_up3;
+                            image = walk_up[2];
+                            image_face = face_up[0];
+                            image_armor = armor_walking_up[2];
                         }
                         if (spriteNum == 4) {
-                            image = up4;
-                            image_face = face_up2;
-                            image_armor = armor_walking_up4;
+                            image = walk_up[3];
+                            image_face = face_up[1];
+                            image_armor = armor_walking_up[3];
                         }
                         break;
-                    case DIRECTION_DOWN:
+                    case Direction.DOWN:
                         if (spriteNum == 1) {
-                            image = down1;
-                            image_face = face_down1;
-                            image_armor = armor_walking_down1;
+                            image = walk_down[0];
+                            image_face = face_down[0];
+                            image_armor = armor_walking_down[0];
                         }
                         if (spriteNum == 2) {
-                            image = down2;
-                            image_face = face_down2;
-                            image_armor = armor_walking_down2;
+                            image = walk_down[1];
+                            image_face = face_down[1];
+                            image_armor = armor_walking_down[1];
                         }
                         if (spriteNum == 3) {
-                            image = down3;
-                            image_face = face_down1;
-                            image_armor = armor_walking_down3;
+                            image = walk_down[2];
+                            image_face = face_down[0];
+                            image_armor = armor_walking_down[2];
                         }
                         if (spriteNum == 4) {
-                            image = down4;
-                            image_face = face_down2;
-                            image_armor = armor_walking_down4;
+                            image = walk_down[3];
+                            image_face = face_down[1];
+                            image_armor = armor_walking_down[3];
                         }
                         break;
-                    case DIRECTION_LEFT:
+                    case Direction.LEFT:
                         if (spriteNum == 1) {
-                            image = left1;
-                            image_face = face_left1;
-                            image_armor = armor_walking_left1;
+                            image = walk_left[0];
+                            image_face = face_left[0];
+                            image_armor = armor_walking_left[0];
                         }
                         if (spriteNum == 2) {
-                            image = left2;
-                            image_face = face_left2;
-                            image_armor = armor_walking_left2;
+                            image = walk_left[1];
+                            image_face = face_left[1];
+                            image_armor = armor_walking_left[1];
                         }
                         if (spriteNum == 3) {
-                            image = left3;
-                            image_face = face_left1;
-                            image_armor = armor_walking_left3;
+                            image = walk_left[2];
+                            image_face = face_left[0];
+                            image_armor = armor_walking_left[2];
                         }
                         if (spriteNum == 4) {
-                            image = left4;
-                            image_face = face_left2;
-                            image_armor = armor_walking_left4;
+                            image = walk_left[3];
+                            image_face = face_left[1];
+                            image_armor = armor_walking_left[3];
                         }
                         break;
-                    case DIRECTION_RIGHT:
+                    case Direction.RIGHT:
                         if (spriteNum == 1) {
-                            image = right1;
-                            image_face = face_right1;
-                            image_armor = armor_walking_right1;
+                            image = walk_right[0];
+                            image_face = face_right[0];
+                            image_armor = armor_walking_right[0];
                         }
                         if (spriteNum == 2) {
-                            image = right2;
-                            image_face = face_right2;
-                            image_armor = armor_walking_right2;
+                            image = walk_right[1];
+                            image_face = face_right[1];
+                            image_armor = armor_walking_right[1];
                         }
                         if (spriteNum == 3) {
-                            image = right3;
-                            image_face = face_right1;
-                            image_armor = armor_walking_right3;
+                            image = walk_right[2];
+                            image_face = face_right[0];
+                            image_armor = armor_walking_right[2];
                         }
                         if (spriteNum == 4) {
-                            image = right4;
-                            image_face = face_right2;
-                            image_armor = armor_walking_right4;
+                            image = walk_right[3];
+                            image_face = face_right[1];
+                            image_armor = armor_walking_right[3];
                         }
                         break;
                     default:
@@ -351,24 +362,24 @@ public class Entity {
             } else {
                 // Idle
                 switch (direction) {
-                    case DIRECTION_UP:
+                    case Direction.UP:
                         image = idle_up1;
-                        image_face = face_up1;
+                        image_face = face_up[0];
                         image_armor = armor_idle_up1;
                         break;
-                    case DIRECTION_DOWN:
+                    case Direction.DOWN:
                         image = idle_down1;
-                        image_face = face_down1;
+                        image_face = face_down[0];
                         image_armor = armor_idle_down1;
                         break;
-                    case DIRECTION_LEFT:
+                    case Direction.LEFT:
                         image = idle_left1;
-                        image_face = face_left1;
+                        image_face = face_left[0];
                         image_armor = armor_idle_left1;
                         break;
-                    case DIRECTION_RIGHT:
+                    case Direction.RIGHT:
                         image = idle_right1;
-                        image_face = face_right1;
+                        image_face = face_right[0];
                         image_armor = armor_idle_right1;
                         break;
                     default:
@@ -377,9 +388,20 @@ public class Entity {
 
             }
 
+            if(invincible){
+                // Show invincible
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+            }
+
+            if(dying){
+                dyingAnimation(g2);
+            }
+
             g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
             g2.drawImage(image_face, screenX, screenY, gp.tileSize, gp.tileSize, null);
             g2.drawImage(image_armor, screenX, screenY, gp.tileSize, gp.tileSize, null);
+
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 
             // Show collision mask
             if(keyH.debugMode){
@@ -391,6 +413,14 @@ public class Entity {
                         solidArea.height
                 );
             }
+        }
+    }
+
+    public void dyingAnimation(Graphics2D g2){
+        dyingCounter++;
+
+        if(dyingCounter <= 5){
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0f));
         }
     }
 }

@@ -1,5 +1,7 @@
 package util;
 
+import util.constants.KeyConstants.*;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -24,9 +26,9 @@ public class ResourceUtil {
     public static String getBasePath(
             String base_template, // spr_base_walking
             String base_action, // spr_base_walk
-            String base_direction, // down
+            Direction base_direction, // down
             String image_path, // base_walk
-            String image_direction, // down
+            Direction image_direction, // down
             int frame // 1
             ){
 
@@ -43,9 +45,9 @@ public class ResourceUtil {
     public static String getFacePath(
             String character, // player
             String base_face, // spr_lemon_head_face
-            String base_direction, // down
+            Direction base_direction, // down
             String image_path, // lemon_head_face
-            String image_direction, // down
+            Direction image_direction, // down
             int frame // 1
     ){
 
@@ -62,9 +64,9 @@ public class ResourceUtil {
     public static String getArmorPath(
             String armor_template, // armor_walking
             String armor_action, // spr_armor_walking
-            String base_direction, // down
+            Direction base_direction, // down
             String image_path, // armor_leather_walking
-            String image_direction, // down
+            Direction image_direction, // down
             int frame // 1
     ){
 
@@ -76,6 +78,17 @@ public class ResourceUtil {
                 image_direction,
                 frame
         );
+    }
+
+    public static String getMonsterPath(
+            String monster_type,
+            Direction direction,
+            int frame
+    ){
+        return String.format("/enemies/%s_%s_%d.png",
+                monster_type,
+                direction,
+                frame);
     }
 
 }

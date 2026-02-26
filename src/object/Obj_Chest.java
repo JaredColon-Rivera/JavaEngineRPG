@@ -3,11 +3,7 @@ package object;
 import entity.Entity;
 import main.GamePanel;
 import main.KeyHandler;
-
-import java.io.IOException;
-
-import static util.ResourceUtil.getResource;
-import static util.constants.KeyConstants.DIRECTION_DOWN;
+import util.constants.KeyConstants.*;
 
 public class Obj_Chest extends Entity {
 
@@ -17,7 +13,7 @@ public class Obj_Chest extends Entity {
 
         name = "Chest";
         idle_down1 = setup("/objects/env/chest.png");
-        direction = DIRECTION_DOWN;
+        direction = Direction.DOWN;
         collision = true;
     }
 }

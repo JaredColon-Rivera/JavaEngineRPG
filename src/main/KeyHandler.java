@@ -58,7 +58,7 @@ public class KeyHandler implements KeyListener {
         }
 
         // PLAY STATE
-        if(gp.gameState == gp.playState){
+        else if(gp.gameState == gp.playState){
 
             if(code == KEY_UP) upPressed = true;
             if(code == KEY_DOWN) downPressed = true;

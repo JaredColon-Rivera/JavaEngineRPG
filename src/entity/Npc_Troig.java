@@ -6,15 +6,16 @@ import main.KeyHandler;
 import java.awt.*;
 import java.util.Random;
 
+import static util.ResourceUtil.*;
+import static util.ResourceUtil.getArmorPath;
 import static util.constants.KeyConstants.*;
-import static util.constants.SpriteConstants.*;
 
 public class Npc_Troig extends Entity{
 
     public Npc_Troig(GamePanel gp, KeyHandler keyH){
         super(gp, keyH);
 
-        direction = DIRECTION_DOWN;
+        direction = Direction.DOWN;
 
         speed = 1;
         idle = false;
@@ -46,16 +47,16 @@ public class Npc_Troig extends Entity{
             int i = random.nextInt(100) + 1;
 
             if(i <= 25){
-                direction = DIRECTION_UP;
+                direction = Direction.UP;
             }
             if(i > 25 && i <= 50){
-                direction = DIRECTION_DOWN;
+                direction = Direction.DOWN;
             }
             if(i > 50 && i <= 75){
-                direction = DIRECTION_LEFT;
+                direction = Direction.LEFT;
             }
             if(i > 75 && i <= 100){
-                direction = DIRECTION_RIGHT;
+                direction = Direction.RIGHT;
             }
 
             actionLockCounter = 0;
@@ -66,73 +67,50 @@ public class Npc_Troig extends Entity{
     }
 
     public void getImage(){
-        // Faces
-        face_down1 = setup(FACE_DOWN_TROIG1);
-        face_down2 = setup(FACE_DOWN_TROIG2);
-
-        face_up1 = setup(FACE_UP_TROIG1);
-        face_up2 = setup(FACE_UP_TROIG2);
-
-        face_left1 = setup(FACE_LEFT_TROIG1);
-        face_left2 = setup(FACE_LEFT_TROIG2);
-
-        face_right1 = setup(FACE_RIGHT_TROIG1);
-        face_right2 = setup(FACE_RIGHT_TROIG2);
-
-        // Armor Idle
-        armor_idle_down1 = setup(ARMOR_IDLE_DOWN_1);
-        armor_idle_up1 = setup(ARMOR_IDLE_UP_1);
-        armor_idle_left1 = setup(ARMOR_IDLE_LEFT_1);
-        armor_idle_right1 = setup(ARMOR_IDLE_RIGHT_1);
-
-        // Base Idle
-        idle_down1 = setup(IDLE_DOWN_1);
-        idle_up1 = setup(IDLE_UP_1);
-        idle_left1 = setup(IDLE_LEFT_1);
-        idle_right1 = setup(IDLE_RIGHT_1);
-
-        // Armor Walking
-        armor_walking_down1 = setup(ARMOR_WALK_DOWN_1);
-        armor_walking_down2 = setup(ARMOR_WALK_DOWN_2);
-        armor_walking_down3 = setup(ARMOR_WALK_DOWN_3);
-        armor_walking_down4 = setup(ARMOR_WALK_DOWN_4);
-
-        armor_walking_up1 = setup(ARMOR_WALK_UP_1);
-        armor_walking_up2 = setup(ARMOR_WALK_UP_2);
-        armor_walking_up3 = setup(ARMOR_WALK_UP_3);
-        armor_walking_up4 = setup(ARMOR_WALK_UP_4);
-
-        armor_walking_left1 = setup(ARMOR_WALK_LEFT_1);
-        armor_walking_left2 = setup(ARMOR_WALK_LEFT_2);
-        armor_walking_left3 = setup(ARMOR_WALK_LEFT_3);
-        armor_walking_left4 = setup(ARMOR_WALK_LEFT_4);
-
-        armor_walking_right1 = setup(ARMOR_WALK_RIGHT_1);
-        armor_walking_right2 = setup(ARMOR_WALK_RIGHT_2);
-        armor_walking_right3 = setup(ARMOR_WALK_RIGHT_3);
-        armor_walking_right4 = setup(ARMOR_WALK_RIGHT_4);
-
-
-        // Base Walking
-        up1 = setup(WALK_UP_1);
-        up2 = setup(WALK_UP_2);
-        up3 = setup(WALK_UP_3);
-        up4 = setup(WALK_UP_4);
-
-        down1 = setup(WALK_DOWN_1);
-        down2 = setup(WALK_DOWN_2);
-        down3 = setup(WALK_DOWN_3);
-        down4 = setup(WALK_DOWN_4);
-
-        left1 = setup(WALK_LEFT_1);
-        left2 = setup(WALK_LEFT_2);
-        left3 = setup(WALK_LEFT_3);
-        left4 = setup(WALK_LEFT_4);
-
-        right1 = setup(WALK_RIGHT_1);
-        right2 = setup(WALK_RIGHT_2);
-        right3 = setup(WALK_RIGHT_3);
-        right4 = setup(WALK_RIGHT_4);
+        // Walking Faces
+//        for (int i = 0; i < 2; i++) {
+//            base_template = "npc";
+//            base_action = "spr_troig_head_face";
+//            image_path = "troig_head_face";
+//            face_up[i] = setup(getFacePath(base_template, base_action, DIRECTION_UP, image_path, DIRECTION_UP, i + 1));
+//            face_down[i] = setup(getFacePath(base_template, base_action, DIRECTION_DOWN, image_path, DIRECTION_DOWN, i + 1));
+//            face_left[i] = setup(getFacePath(base_template, base_action, DIRECTION_LEFT, image_path, DIRECTION_LEFT, i + 1));
+//            face_right[i] = setup(getFacePath(base_template, base_action, DIRECTION_RIGHT, image_path, DIRECTION_RIGHT, i + 1));
+//        }
+//
+//        // Armor Idle
+//        armor_idle_down1 = setup(getArmorPath("armor_idle", "spr_armor_idle", DIRECTION_DOWN, "armor_leather_idle", DIRECTION_DOWN, 1));
+//        armor_idle_up1 = setup(getArmorPath("armor_idle", "spr_armor_idle", DIRECTION_UP, "armor_leather_idle", DIRECTION_UP, 1));
+//        armor_idle_left1 = setup(getArmorPath("armor_idle", "spr_armor_idle", DIRECTION_LEFT, "armor_leather_idle", DIRECTION_LEFT, 1));
+//        armor_idle_right1 = setup(getArmorPath("armor_idle", "spr_armor_idle", DIRECTION_RIGHT, "armor_leather_idle", DIRECTION_RIGHT, 1));
+//
+//        // Base Idle
+//        idle_down1 = setup(getBasePath("spr_base_idle", "spr_base_idle", DIRECTION_DOWN, "base_idle", DIRECTION_DOWN, 1));
+//        idle_up1 = setup(getBasePath("spr_base_idle", "spr_base_idle", DIRECTION_UP, "base_idle", DIRECTION_UP, 1));
+//        idle_left1 = setup(getBasePath("spr_base_idle", "spr_base_idle", DIRECTION_LEFT, "base_idle", DIRECTION_LEFT, 1));
+//        idle_right1 = setup(getBasePath("spr_base_idle", "spr_base_idle", DIRECTION_RIGHT, "base_idle", DIRECTION_RIGHT, 1));
+//
+//        // Leather Armor Walking
+//        for (int i = 0; i < 4; i++) {
+//            base_template = "armor_walking";
+//            base_action = "spr_armor_walking";
+//            image_path = "armor_leather_walking";
+//            armor_walking_up[i] = setup(getArmorPath(base_template, base_action, DIRECTION_UP, image_path, DIRECTION_UP, i + 1));
+//            armor_walking_down[i] = setup(getArmorPath(base_template, base_action, DIRECTION_DOWN, image_path, DIRECTION_DOWN, i + 1));
+//            armor_walking_left[i] = setup(getArmorPath(base_template, base_action, DIRECTION_LEFT, image_path, DIRECTION_LEFT, i + 1));
+//            armor_walking_right[i] = setup(getArmorPath(base_template, base_action, DIRECTION_RIGHT, image_path, DIRECTION_RIGHT, i + 1));
+//        }
+//
+//        // Base Walking
+//        for (int i = 0; i < 4; i++) {
+//            base_template = "spr_base_walking";
+//            base_action = "spr_base_walk";
+//            image_path = "base_walk";
+//            walk_up[i] = setup(getBasePath(base_template, base_action, DIRECTION_UP, image_path, DIRECTION_UP, i + 1));
+//            walk_down[i] = setup(getBasePath(base_template, base_action, DIRECTION_DOWN, image_path, DIRECTION_DOWN, i + 1));
+//            walk_left[i] = setup(getBasePath(base_template, base_action, DIRECTION_LEFT, image_path, DIRECTION_LEFT, i + 1));
+//            walk_right[i] = setup(getBasePath(base_template, base_action, DIRECTION_RIGHT, image_path, DIRECTION_RIGHT, i + 1));
+//        }
     }
 
 }
