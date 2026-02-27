@@ -17,6 +17,8 @@ public class Player extends Entity{
     public final int screenX;
     public final int screenY;
 
+    public boolean attackCancelled = false;
+
     public int hasKey = 0;
 
     public Player (GamePanel gp, KeyHandler keyH){
@@ -201,10 +203,16 @@ public class Player extends Entity{
                 }
             }
 
+            if(keyH.enterPressed && !attackCancelled){
+                attacking = true;
+                spriteCounter = 0;
+            }
+
+            attackCancelled = false;
             gp.keyH.enterPressed = false;
 
             spriteCounter++;
-            if(spriteCounter > 16){
+            if(spriteCounter > 10){
                 if(spriteNum == 1){
                     spriteNum = 2;
                 }
@@ -241,11 +249,9 @@ public class Player extends Entity{
 
         if(gp.keyH.enterPressed){
             if(i != 999){
+                attackCancelled = true;
                 gp.gameState = gp.dialogueState;
                 gp.npc[i].speak();
-            }
-            else{
-                attacking = true;
             }
         }
     }
@@ -253,10 +259,10 @@ public class Player extends Entity{
     public void attacking(){
 
         spriteCounter++;
-        if(spriteCounter <= 15) {
+        if(spriteCounter <= 6) {
             spriteNum = 1;
         }
-        if(spriteCounter > 15 && spriteCounter <= 30){
+        if(spriteCounter > 6 && spriteCounter <= 12){
             spriteNum = 2;
 
             // Save the current world x and world y and solid area
@@ -269,7 +275,7 @@ public class Player extends Entity{
             switch(direction){
                 case Direction.UP:
                     attackArea.width = 36;
-                    attackArea.height = 12;
+                    attackArea.height = 24;
                     worldY -= attackArea.height;
                     break;
                 case Direction.DOWN:
@@ -306,13 +312,13 @@ public class Player extends Entity{
             solidArea.height = solidAreaHeight;
 
         }
-        if(spriteCounter > 30 && spriteCounter <= 45){
+        if(spriteCounter > 12 && spriteCounter <= 18){
             spriteNum = 3;
         }
-        if(spriteCounter > 45 && spriteCounter <= 60){
+        if(spriteCounter > 18 && spriteCounter <= 24){
             spriteNum = 4;
         }
-        if(spriteCounter > 60){
+        if(spriteCounter > 30){
             spriteNum = 1;
             spriteCounter = 0;
             attacking = false;
@@ -359,6 +365,7 @@ public class Player extends Entity{
     public void contactEnemy(int i){
         if(i != 999){
             if(!invincible){
+                gp.playSoundEffect(4);
                 life -= 1;
                 invincible = true;
             }
@@ -368,8 +375,10 @@ public class Player extends Entity{
     public void damageEnemy(int i){
         if(i != 999){
             if(!gp.enemy[i].invincible){
+                gp.playSoundEffect(5);
                 gp.enemy[i].life -= 1;
                 gp.enemy[i].invincible = true;
+                gp.enemy[i].damageReaction();
 
                 if(gp.enemy[i].life <= 0){
                     gp.enemy[i].dying = true;
@@ -418,6 +427,10 @@ public class Player extends Entity{
         if(invincible){
             // Show invincible
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+        }
+
+        if(dying){
+            dyingAnimation(g2);
         }
 
         if(!attacking){

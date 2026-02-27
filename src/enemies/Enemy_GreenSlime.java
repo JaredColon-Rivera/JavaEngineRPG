@@ -13,8 +13,12 @@ import static util.constants.KeyConstants.DIRECTION_RIGHT;
 
 public class Enemy_GreenSlime extends Entity {
 
+    GamePanel gp;
+
     public Enemy_GreenSlime(GamePanel gp, KeyHandler keyH){
         super(gp, keyH);
+
+        this.gp = gp;
 
         type = 2;
         name = "Green Slime";
@@ -73,6 +77,11 @@ public class Enemy_GreenSlime extends Entity {
 
         }
 
+    }
+
+    public void damageReaction(){
+        actionLockCounter = 0;
+        direction = gp.player.direction;
     }
 
 

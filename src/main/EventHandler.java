@@ -131,6 +131,7 @@ public class EventHandler {
     public void healthPool(int gameState){
         if(gp.keyH.enterPressed){
             gp.gameState = gameState;
+            gp.player.attackCancelled = true;
             gp.ui.currentDialogue = "You drink the water and restore life";
             gp.player.life = gp.player.maxLife;
         }

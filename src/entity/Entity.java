@@ -43,9 +43,11 @@ public class Entity {
 
     // Combat
     public boolean attacking = false;
-    boolean alive = true;
-    boolean dying = false;
+    public boolean alive = true;
+    public boolean dying = false;
     int dyingCounter = 0;
+    boolean hpBarOn = false;
+    int hpBarCounter = 0;
 
     // Collision
     public Rectangle solidArea = new Rectangle(4, 20, 40, 20);
@@ -185,6 +187,7 @@ public class Entity {
     public void setAction(){
 
     }
+    public void damageReaction(){}
 
     public void update(){
         setAction();
@@ -388,9 +391,32 @@ public class Entity {
 
             }
 
+            // ENEMY HEALTH BAR
+            if(type == 2 && hpBarOn == true){
+
+                double oneScale = (double)gp.tileSize/maxLife;
+                double hpBarValue = oneScale * life;
+
+
+                g2.setColor(new Color(35, 25, 25));
+                g2.fillRect(screenX - 1, screenY - 16, gp.tileSize + 2, 12);
+                g2.setColor(new Color(255, 0, 30));
+                g2.fillRect(screenX, screenY - 15, (int)hpBarValue, 10);
+
+                hpBarCounter++;
+
+                if(hpBarCounter > 600){
+                    hpBarCounter = 0;
+                    hpBarOn = false;
+                }
+            }
+
+
             if(invincible){
                 // Show invincible
-                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+                hpBarOn = true;
+                hpBarCounter = 0;
+                changeAlpha(g2, 0.4f);
             }
 
             if(dying){
@@ -401,8 +427,7 @@ public class Entity {
             g2.drawImage(image_face, screenX, screenY, gp.tileSize, gp.tileSize, null);
             g2.drawImage(image_armor, screenX, screenY, gp.tileSize, gp.tileSize, null);
 
-            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-
+            changeAlpha(g2, 1f);
             // Show collision mask
             if(keyH.debugMode){
                 g2.setColor(Color.RED);
@@ -417,10 +442,28 @@ public class Entity {
     }
 
     public void dyingAnimation(Graphics2D g2){
+
         dyingCounter++;
 
-        if(dyingCounter <= 5){
-            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0f));
+        int i = 5;
+
+        if(dyingCounter <= i) changeAlpha(g2, 0f);
+        if(dyingCounter > i && dyingCounter <= i*2) changeAlpha(g2, 1f);
+        if(dyingCounter > i*2 && dyingCounter <= i*3) changeAlpha(g2, 0f);
+        if(dyingCounter > i*3 && dyingCounter <= i*4) changeAlpha(g2, 1f);
+        if(dyingCounter > i*4 && dyingCounter <= i*5) changeAlpha(g2, 0f);
+        if(dyingCounter > i*5 && dyingCounter <= i*6) changeAlpha(g2, 1f);
+        if(dyingCounter > i*6 && dyingCounter <= i*7) changeAlpha(g2, 0f);
+        if(dyingCounter > i*7 && dyingCounter <= i*8) changeAlpha(g2, 0f);
+
+        if(dyingCounter > i*8){
+            dying = false;
+            alive = false;
         }
+    }
+
+    public void changeAlpha(Graphics2D g2, float alphaValues){
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValues));
+
     }
 }
